@@ -1,17 +1,35 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { getqueue } = require("./play");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const fs = require("fs");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("queue").setDescription("WIP"),
+  data: new SlashCommandBuilder().setName("queue").setDescription("Shows all requested songs."),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
+    let Queue = fs.readFileSync("queue.json", "utf8");
+    if (!Queue) return;
 
-    return;
+    Queue = JSON.parse(Queue);
+
+    let newDesc = [];
+    
+    for(let i = 0; i < Queue.length; i++) {
+      newDesc.push(`**#${i+1}** [${Queue[i].title}](${Queue[i].url})`)
+    }
+
+    let QueueEmbed = new EmbedBuilder()
+      .setTitle("List of songs:")
+      .setColor("Gold")
+      .setThumbnail('https://cdn.discordapp.com/attachments/551056320250249219/1036588835661938699/8q8yqy33c7f71.jpg')
+      .setAuthor({
+        iconURL: interaction.user.displayAvatarURL(),
+        name: interaction.user.tag,
+      })
+      .setDescription(`${newDesc.slice(0, 10).join('\n\n')}`)
 
     await interaction.editReply({
-      content: newMessage,
+      embeds: [QueueEmbed],
       ephemeral: true,
     });
   },

@@ -3,9 +3,11 @@ const {
   joinVoiceChannel,
   createAudioPlayer,
   createAudioResource,
+  getVoiceConnection
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
+const fs = require("fs");
 
 const queue = new Map();
 
@@ -58,6 +60,8 @@ module.exports = {
           inline: false,
         },
       ]);
+
+      
     //Create queue constructor
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
@@ -76,7 +80,7 @@ module.exports = {
     };
 
     if (!server_queue) {
-      const queue_constructor = {
+      var queue_constructor = {
         voice_channel: voiceChannel,
         text_channel: interaction.channel,
         connection: null,
@@ -101,6 +105,16 @@ module.exports = {
     } else {
       server_queue.songs.push(song);
       message.channel.send(`🎶**${song.title}** added to the queue.`);
+
+      let SaveQueue = JSON.stringify(server_queue.songs);
+
+      fs.writeFile("queue.json", SaveQueue, function (err) {
+        if (err) {
+          console.log("Error while saving queue.");
+          return console.log(err);
+        }
+      });
+
     }
   },
 };
