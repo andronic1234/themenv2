@@ -1,5 +1,3 @@
-require("dotenv").config();
-const { BOT_TOKEN, DB_TOKEN } = process.env;
 const { connect } = require("mongoose");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
@@ -78,7 +76,7 @@ async () => {
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
-client.login(BOT_TOKEN);
+client.login('OTExNzI4NDM3Mzk0MjkyNzk2.YZlnRg.TLMPR0zypba8KKv-R-RyUpuxE38'EN);
 (async () => {
-  await connect(DB_TOKEN).catch(console.error);
+  await connect('mongodb+srv://Andronic:pizzayolo12@themen.jazbs.mongodb.net/Men?retryWrites=true&w=majority').catch(console.error);
 })();
