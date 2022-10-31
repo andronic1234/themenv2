@@ -1,5 +1,4 @@
-require("dotenv").config();
-const { BOT_TOKEN, DB_TOKEN } = process.env;
+
 const { connect } = require("mongoose");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
