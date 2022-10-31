@@ -77,7 +77,7 @@ async () => {
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
-client.login(BOT_TOKEN);
+client.login('OTExNzI4NDM3Mzk0MjkyNzk2.YZlnRg.TLMPR0zypba8KKv-R-RyUpuxE38');
 (async () => {
-  await connect(DB_TOKEN).catch(console.error);
+  await connect('mongodb+srv://Andronic:pizzayolo12@themen.jazbs.mongodb.net/Men?retryWrites=true&w=majority').catch(console.error);
 })();
