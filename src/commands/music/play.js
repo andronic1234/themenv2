@@ -65,14 +65,17 @@ module.exports = {
     //Create queue constructor
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
+      try {
+        var stream = ytdl(song.url, { filter: "audioonly" });
 
-      var stream = ytdl(song.url, { filter: "audioonly" });
+        var player = createAudioPlayer();
+        const resource = createAudioResource(stream);
+        player.play(resource);
 
-      var player = createAudioPlayer();
-      const resource = createAudioResource(stream);
-      player.play(resource);
-
-      song_queue.connection.subscribe(player);
+        song_queue.connection.subscribe(player);
+      } catch (err) {
+        console.log(err);
+      }
       stream.on("finish", () => {
         console.log(song_queue.songs[0]);
         song_queue.songs.shift();
