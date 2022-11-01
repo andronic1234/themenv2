@@ -3,14 +3,13 @@ const {
   joinVoiceChannel,
   createAudioPlayer,
   createAudioResource,
-  getVoiceConnection
+  getVoiceConnection,
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
 const fs = require("fs");
 
 const queue = new Map();
-
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("play")
@@ -27,6 +26,8 @@ module.exports = {
     });
     message.delete(200);
     // Box Input, basically the args
+
+    let SaveQueue;
 
     let input = interaction.options._hoistedOptions[0].value;
     let voiceChannel = interaction.member.voice.channel;
@@ -61,15 +62,16 @@ module.exports = {
         },
       ]);
 
-      
     //Create queue constructor
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
 
       var stream = ytdl(song.url, { filter: "audioonly" });
-      const player = createAudioPlayer();
+
+      var player = createAudioPlayer();
       const resource = createAudioResource(stream);
       player.play(resource);
+
       song_queue.connection.subscribe(player);
       stream.on("finish", () => {
         console.log(song_queue.songs[0]);
@@ -79,7 +81,10 @@ module.exports = {
       await song_queue.text_channel.send({ embeds: [NowPlaying] });
     };
 
-    if (!server_queue) {
+    if (
+      !server_queue ||
+      getVoiceConnection(interaction.guild.id) == undefined
+    ) {
       var queue_constructor = {
         voice_channel: voiceChannel,
         text_channel: interaction.channel,
@@ -102,11 +107,7 @@ module.exports = {
         message.channel.send("Error while trying to establish connection.");
         throw err;
       }
-    } else {
-      server_queue.songs.push(song);
-      message.channel.send(`🎶**${song.title}** added to the queue.`);
-
-      let SaveQueue = JSON.stringify(server_queue.songs);
+      SaveQueue = JSON.stringify(queue_constructor.songs);
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
         if (err) {
@@ -114,7 +115,18 @@ module.exports = {
           return console.log(err);
         }
       });
+    } else {
+      server_queue.songs.push(song);
+      message.channel.send(`🎶**${song.title}** added to the queue.`);
 
+      SaveQueue = JSON.stringify(server_queue.songs);
+
+      fs.writeFile("queue.json", SaveQueue, function (err) {
+        if (err) {
+          console.log("Error while saving queue.");
+          return console.log(err);
+        }
+      });
     }
   },
 };
