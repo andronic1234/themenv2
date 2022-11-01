@@ -37,7 +37,7 @@ module.exports = {
       })
       .setDescription(`${newDesc.slice(0, 10).join("\n\n")}`);
 
-    await interaction.reply({
+    await interaction.editReply({
       embeds: [QueueEmbed],
       ephemeral: true,
     });
