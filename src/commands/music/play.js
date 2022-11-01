@@ -68,7 +68,7 @@ module.exports = {
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
 
-      var stream = ytdl(song.url, { filter: "audioonly" });
+      const stream = ytdl(song.url, { filter: "audioonly" });
 
       var player = createAudioPlayer();
       const resource = createAudioResource(stream);
@@ -76,19 +76,19 @@ module.exports = {
 
       song_queue.connection.subscribe(player);
 
-      stream.on("finish", () => {
-        console.log(song_queue.songs[0]);
-        song_queue.songs.shift();
-        SaveQueue = JSON.stringify(song_queue.songs);
+      // stream.on("finish", () => {
+      //   console.log(song_queue.songs[0]);
+      //   song_queue.songs.shift();
+      //   SaveQueue = JSON.stringify(song_queue.songs);
 
-        fs.writeFile("queue.json", SaveQueue, function (err) {
-          if (err) {
-            console.log("Error while saving queue.");
-            return console.log(err);
-          }
-        });
-        video_player(guild, song_queue.songs[0]);
-      });
+      //   fs.writeFile("queue.json", SaveQueue, function (err) {
+      //     if (err) {
+      //       console.log("Error while saving queue.");
+      //       return console.log(err);
+      //     }
+      //   });
+      //   video_player(guild, song_queue.songs[0]);
+      // });
       await song_queue.text_channel.send({ embeds: [NowPlaying] });
     };
 
