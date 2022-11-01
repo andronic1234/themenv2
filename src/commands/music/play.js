@@ -80,7 +80,7 @@ module.exports = {
         });
         await song_queue.text_channel.send({ embeds: [NowPlaying] });
       } catch (err) {
-        throw err;
+        console.log("Ben");
       }
     };
 
