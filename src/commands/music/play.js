@@ -66,22 +66,22 @@ module.exports = {
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
       try {
-        var stream = ytdl(song.url, { filter: "audioonly" });
+        const stream = ytdl(song.url, { filter: "audioonly" });
 
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
         player.play(resource);
 
         song_queue.connection.subscribe(player);
+        stream.on("finish", () => {
+          console.log(song_queue.songs[0]);
+          song_queue.songs.shift();
+          video_player(guild, song_queue.songs[0]);
+        });
+        await song_queue.text_channel.send({ embeds: [NowPlaying] });
       } catch (err) {
         console.log(err);
       }
-      stream.on("finish", () => {
-        console.log(song_queue.songs[0]);
-        song_queue.songs.shift();
-        video_player(guild, song_queue.songs[0]);
-      });
-      await song_queue.text_channel.send({ embeds: [NowPlaying] });
     };
 
     if (
