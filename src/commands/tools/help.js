@@ -15,7 +15,7 @@ module.exports = {
         name: interaction.user.tag,
       })
       .setFooter({
-        text: `Bot made by LilB & PopoChan`,
+        text: `Bot made by LilB`,
       })
       .addFields([
         {
@@ -51,6 +51,16 @@ module.exports = {
         {
           name: `__/play__`,
           value: `Makes the Men play a song.`,
+          inline: false,
+        },
+        {
+          name: `__/pause__`,
+          value: `Pauses current song.`,
+          inline: false,
+        },
+        {
+          name: `__/queue__`,
+          value: `Shows the list of songs.`,
           inline: false,
         },
       ]);
