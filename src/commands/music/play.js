@@ -45,9 +45,11 @@ module.exports = {
     let chann = videos[0].author.name;
     let thumb = videos[0].thumbnail;
     //Get song info
-    var song = {
-      title: videos[0].title,
-      url: videos[0].url,
+    const vtitle = videos[0].title
+    const vurl = videos[0].url
+    const song = {
+      title: vtitle,
+      url: vurl,
     };
 
     let NowPlaying = new EmbedBuilder()
@@ -65,23 +67,21 @@ module.exports = {
     //Create queue constructor
     const video_player = async (guild, song) => {
       const song_queue = queue.get(guild.id);
-      try {
-        const stream = ytdl(song.url, { filter: "audioonly" });
+
+        var stream = ytdl(song.url, { filter: "audioonly" });
 
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
         player.play(resource);
 
         song_queue.connection.subscribe(player);
+    
         stream.on("finish", () => {
           console.log(song_queue.songs[0]);
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
         });
         await song_queue.text_channel.send({ embeds: [NowPlaying] });
-      } catch (err) {
-        console.log("Ben");
-      }
     };
 
     if (
