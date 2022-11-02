@@ -20,9 +20,7 @@ module.exports = {
 
       const Lead = new EmbedBuilder()
         .setColor("DarkGreen")
-        .setThumbnail(
-          "https://cdn.discordapp.com/attachments/755482197150007448/912481617950437437/GoDSlayeRLogoLOW2.png"
-        )
+        .setThumbnail(interaction.guild.iconURL())
         .setTitle("The Men Leaderboard")
         .setTimestamp();
 
