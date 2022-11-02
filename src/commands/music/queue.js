@@ -10,7 +10,6 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-    message.delete(200);
     
     let Queue = fs.readFileSync("queue.json", "utf8");
     var noQueue = "There is no queue men sorri 😔";

@@ -49,12 +49,10 @@ module.exports = {
       time: videos[0].timestamp,
       chann: videos[0].author.name,
       thumb: videos[0].thumbnail,
-      skipped: false,
     };
 
     //Create queue constructor
     const video_player = async (guild, song) => {
-
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
       var song_queue = queue.get(guild.id);
@@ -83,23 +81,42 @@ module.exports = {
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
           player.unpause();
-
-
         }
       });
+      player.on(AudioPlayerStatus.Idle, async () => {
+        await delay(500);
 
-      player.on(AudioPlayerStatus.Idle, () => {
+        let Options = fs.readFileSync("options.json", "utf8");
+        Options = JSON.parse(Options);
 
-        delay(500);
-        
-        console.log(song_queue.songs[0]);
-        if (song_queue.songs.length > 1) {
-          song_queue.songs.shift();
+        //Shuffle & Loop on
+        if (Options[0].loop == true && Options[0].shuffle) {
+          song_queue.songs.push(song_queue.songs.shift());
+          song_queue.songs.sort((a, b) => 0.5 - Math.random());
           video_player(guild, song_queue.songs[0]);
+        }
+        //Loop on
+        if (Options[0].loop == true) {
+          song_queue.songs.push(song_queue.songs.shift());
+          video_player(guild, song_queue.songs[0]);
+        } else if (song_queue.songs.length > 1) {
+          //Shuffle on
+          if (Options[0].shuffle == true) {
+            song_queue.songs.sort((a, b) => 0.5 - Math.random());
+            video_player(guild, song_queue.songs[0]);
+            //Shift queue
+          } else {
+            song_queue.songs.shift();
+            video_player(guild, song_queue.songs[0]);
+          }
+          //Last song before dc
         } else {
           song_queue.songs.shift();
-          delay(30000);
-          song_queue.connection.destroy()
+          await delay(30000);
+          if(song_queue.songs.length != 0) return
+          try{
+          song_queue.connection.destroy();
+          } catch {}
         }
       });
       let NowPlaying = new EmbedBuilder()
