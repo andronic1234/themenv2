@@ -93,10 +93,11 @@ module.exports = {
         delay(500);
         
         console.log(song_queue.songs[0]);
-        if (song_queue.songs.length != 0) {
+        if (song_queue.songs.length > 1) {
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
         } else {
+          song_queue.songs.shift();
           delay(30000);
           song_queue.connection.destroy()
         }
