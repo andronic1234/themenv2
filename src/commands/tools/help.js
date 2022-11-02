@@ -73,6 +73,16 @@ module.exports = {
           value: `Shows information of the current song.`,
           inline: false,
         },
+        {
+          name: `__/shuffle__`,
+          value: `Toggle Queue shuffle`,
+          inline: false,
+        },
+        {
+          name: `__/loop__`,
+          value: `Toggle Queue loop`,
+          inline: false,
+        },
       ]);
     await interaction.reply({
       embeds: [Helpembed],
