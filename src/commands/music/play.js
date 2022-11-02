@@ -57,11 +57,15 @@ module.exports = {
 
       var song_queue = queue.get(guild.id);
       try {
-        var stream = ytdl(song.url, { filter: "audioonly" });
+        var stream = ytdl(song.url, {
+          filter: "audioonly",
+          quality: "highestaudio",
+          highWaterMark: 1 << 25,
+        });
 
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
-        player.play(resource);
+        player.play(resource, { highWaterMark: 1 });
       } catch {}
       song_queue.connection.subscribe(player);
 
@@ -113,9 +117,9 @@ module.exports = {
         } else {
           song_queue.songs.shift();
           await delay(30000);
-          if(song_queue.songs.length != 0) return
-          try{
-          song_queue.connection.destroy();
+          if (song_queue.songs.length != 0) return;
+          try {
+            song_queue.connection.destroy();
           } catch {}
         }
       });
