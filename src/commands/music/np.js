@@ -3,7 +3,7 @@ const fs = require("fs");
 const { getVoiceConnection } = require("@discordjs/voice")
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("np").setDescription("WIP"),
+  data: new SlashCommandBuilder().setName("np").setDescription("Shows current song"),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,
