@@ -54,6 +54,9 @@ module.exports = {
 
     //Create queue constructor
     const video_player = async (guild, song) => {
+
+      const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
       var song_queue = queue.get(guild.id);
       try {
         var stream = ytdl(song.url, { filter: "audioonly" });
@@ -86,10 +89,16 @@ module.exports = {
       });
 
       player.on(AudioPlayerStatus.Idle, () => {
+
+        delay(500);
+        
         console.log(song_queue.songs[0]);
         if (song_queue.songs.length != 0) {
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
+        } else {
+          delay(30000);
+          song_queue.connection.destroy()
         }
       });
       let NowPlaying = new EmbedBuilder()
