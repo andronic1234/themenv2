@@ -4,6 +4,7 @@ const {
   createAudioPlayer,
   createAudioResource,
   getVoiceConnection,
+  AudioPlayerStatus,
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
@@ -25,10 +26,10 @@ module.exports = {
       fetchReply: true,
     });
     message.delete(200);
-    // Box Input, basically the args
 
     let SaveQueue;
 
+    // Box Input, basically the args
     let input = interaction.options._hoistedOptions[0].value;
     let voiceChannel = interaction.member.voice.channel;
     if (!voiceChannel) {
@@ -41,47 +42,69 @@ module.exports = {
     //Searches string with ytsearch
     const r = await yts(input);
     const videos = r.videos.slice(0, 1);
-    let time = videos[0].timestamp;
-    let chann = videos[0].author.name;
-    let thumb = videos[0].thumbnail;
     //Get song info
-    const vtitle = videos[0].title
-    const vurl = videos[0].url
     const song = {
-      title: vtitle,
-      url: vurl,
+      title: videos[0].title,
+      url: videos[0].url,
+      time: videos[0].timestamp,
+      chann: videos[0].author.name,
+      thumb: videos[0].thumbnail,
+      skipped: false,
     };
-
-    let NowPlaying = new EmbedBuilder()
-      .setTitle("🎶 **Now Playing** 🎶")
-      .setColor("DarkGreen")
-      .setThumbnail(thumb)
-      .addFields([
-        {
-          name: `Song Information:`,
-          value: `[${song.title}](${song.url})\n\n**Channel: __${chann}__\nLength: __${time}__**`,
-          inline: false,
-        },
-      ]);
 
     //Create queue constructor
     const video_player = async (guild, song) => {
-      const song_queue = queue.get(guild.id);
-
+      var song_queue = queue.get(guild.id);
+      try {
         var stream = ytdl(song.url, { filter: "audioonly" });
 
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
         player.play(resource);
+      } catch {}
+      song_queue.connection.subscribe(player);
 
-        song_queue.connection.subscribe(player);
-    
-        stream.on("finish", () => {
-          console.log(song_queue.songs[0]);
+      SaveQueue = JSON.stringify(song_queue.songs);
+
+      fs.writeFile("queue.json", SaveQueue, function (err) {
+        if (err) {
+          console.log("Error while saving queue.");
+          return console.log(err);
+        }
+      });
+
+      player.on(AudioPlayerStatus.Paused, () => {
+        let Queue = fs.readFileSync("queue.json", "utf8");
+        let CheckSkip = JSON.parse(Queue);
+        if (CheckSkip[0].skipped == true) {
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
-        });
-        await song_queue.text_channel.send({ embeds: [NowPlaying] });
+          player.unpause();
+
+
+        }
+      });
+
+      player.on(AudioPlayerStatus.Idle, () => {
+        console.log(song_queue.songs[0]);
+        if (song_queue.songs.length != 0) {
+          song_queue.songs.shift();
+          video_player(guild, song_queue.songs[0]);
+        }
+      });
+      let NowPlaying = new EmbedBuilder()
+        .setTitle("🎶 **Now Playing** 🎶")
+        .setColor("DarkGreen")
+        .setThumbnail(song_queue.songs[0].thumb)
+        .addFields([
+          {
+            name: `Song Information:`,
+            value: `[${song_queue.songs[0].title}](${song_queue.songs[0].url})\n\n**Channel: __${song_queue.songs[0].chann}__\nLength: __${song_queue.songs[0].time}__**`,
+            inline: false,
+          },
+        ]);
+
+      await song_queue.text_channel.send({ embeds: [NowPlaying] });
     };
 
     if (

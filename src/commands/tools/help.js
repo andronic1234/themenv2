@@ -59,8 +59,18 @@ module.exports = {
           inline: false,
         },
         {
+          name: `__/skip__`,
+          value: `Skips current song.`,
+          inline: false,
+        },
+        {
           name: `__/queue__`,
           value: `Shows the list of songs.`,
+          inline: false,
+        },
+        {
+          name: `__/np__`,
+          value: `Shows information of the current song.`,
           inline: false,
         },
       ]);
