@@ -14,7 +14,6 @@ module.exports = {
 
 
     if (Options[0].shuffle == false) {
-      console.log('passes')
       Options[0].shuffle = true;
       newMessage = "Shuffling is enabled.";
     } else {

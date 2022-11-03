@@ -15,7 +15,6 @@ module.exports = {
 
 
     if (Options[0].loop == false) {
-      console.log('passes')
       Options[0].loop = true;
       newMessage = "Looping is enabled.";
     } else {
