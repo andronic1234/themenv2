@@ -40,23 +40,47 @@ module.exports = {
     const server_queue = queue.get(interaction.guild.id);
 
     //Searches string with ytsearch
-    const r = await yts(input);
-    const videos = r.videos.slice(0, 1);
-    //Get song info
-    const song = {
-      title: videos[0].title,
-      url: videos[0].url,
-      time: videos[0].timestamp,
-      chann: videos[0].author.name,
-      thumb: videos[0].thumbnail,
-    };
 
+    let song;
+    console.log(input);
+    if (input.includes("playlist?list=")) {
+      let listID = input.substr(input.search("list=") + 5, 34);
+      const list = await yts({ listId: listID });
+      var listarr = new Array();
+      for (let i = 0; i < Math.min(list.videos.length, 100); i++) {
+        song = {
+          title: list.videos[i].title,
+          url: "https://www.youtube.com/watch?v=" + list.videos[i].videoId,
+          time: list.videos[i].duration.timestamp,
+          chann: list.videos[i].author.name,
+          thumb: list.videos[i].thumbnail,
+        };
+        listarr.push(song);
+        if (i == 99) {
+          interaction.channel.send(
+            "Limit is 100 songs per list. Added the first 100 songs."
+          );
+        }
+      }
+    } else {
+      const r = await yts(input);
+      let svideos = r.videos.slice(0, 1);
+      //Get song info
+      song = {
+        title: svideos[0].title,
+        url: svideos[0].url,
+        time: svideos[0].timestamp,
+        chann: svideos[0].author.name,
+        thumb: svideos[0].thumbnail,
+      };
+    }
     //Create queue constructor
     const video_player = async (guild, song) => {
       const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
       var song_queue = queue.get(guild.id);
       try {
+        //Gets yt stream and plays it
         var stream = ytdl(song.url, {
           filter: "audioonly",
           quality: "highestaudio",
@@ -78,41 +102,71 @@ module.exports = {
         }
       });
 
+      let Options = fs.readFileSync("options.json", "utf8");
+      Options = JSON.parse(Options);
+      //Skipping event
       player.on(AudioPlayerStatus.Paused, () => {
         let Queue = fs.readFileSync("queue.json", "utf8");
         let CheckSkip = JSON.parse(Queue);
+
         if (CheckSkip[0].skipped == true) {
+          //Shuffle & Loop on
+          if (Options[0].loop == true && Options[0].shuffle == true) {
+            song_queue.songs.push(song_queue.songs.shift());
+            song_queue.songs.sort((a, b) => 0.5 - Math.random());
+            video_player(guild, song_queue.songs[0]);
+            player.unpause();
+            return;
+          }
+          //Loop on
+          if (Options[0].loop == true) {
+            song_queue.songs.push(song_queue.songs.shift());
+            video_player(guild, song_queue.songs[0]);
+            player.unpause();
+            return;
+          } else if (song_queue.songs.length > 1) {
+            //Shuffle on
+            if (Options[0].shuffle == true) {
+              song_queue.songs.shift();
+              song_queue.songs.sort((a, b) => 0.5 - Math.random());
+              video_player(guild, song_queue.songs[0]);
+              player.unpause();
+              return;
+            }
+            //Shift queue
+          } else {
+            song_queue.songs.shift();
+            video_player(guild, song_queue.songs[0]);
+            player.unpause();
+            return;
+          }
           song_queue.songs.shift();
           video_player(guild, song_queue.songs[0]);
           player.unpause();
+          return;
         }
       });
       player.on(AudioPlayerStatus.Idle, async () => {
         await delay(500);
 
-        let Options = fs.readFileSync("options.json", "utf8");
-        Options = JSON.parse(Options);
-
         //Shuffle & Loop on
-        if (Options[0].loop == true && Options[0].shuffle) {
+        if (Options[0].loop == true && Options[0].shuffle == true) {
           song_queue.songs.push(song_queue.songs.shift());
           song_queue.songs.sort((a, b) => 0.5 - Math.random());
-          video_player(guild, song_queue.songs[0]);
         }
         //Loop on
         if (Options[0].loop == true) {
           song_queue.songs.push(song_queue.songs.shift());
-          video_player(guild, song_queue.songs[0]);
         } else if (song_queue.songs.length > 1) {
           //Shuffle on
           if (Options[0].shuffle == true) {
+            song_queue.songs.shift();
             song_queue.songs.sort((a, b) => 0.5 - Math.random());
-            video_player(guild, song_queue.songs[0]);
             //Shift queue
           } else {
             song_queue.songs.shift();
-            video_player(guild, song_queue.songs[0]);
           }
+          video_player(guild, song_queue.songs[0]);
           //Last song before dc
         } else {
           song_queue.songs.shift();
@@ -123,6 +177,7 @@ module.exports = {
           } catch {}
         }
       });
+      //Now Playing embed
       let NowPlaying = new EmbedBuilder()
         .setTitle("🎶 **Now Playing** 🎶")
         .setColor("DarkGreen")
@@ -137,7 +192,7 @@ module.exports = {
 
       await song_queue.text_channel.send({ embeds: [NowPlaying] });
     };
-
+    //Create server queue
     if (
       !server_queue ||
       getVoiceConnection(interaction.guild.id) == undefined
@@ -149,8 +204,11 @@ module.exports = {
         songs: [],
       };
       queue.set(interaction.guild.id, queue_constructor);
-      queue_constructor.songs.push(song);
-
+      if (listarr != undefined) {
+        queue_constructor.songs = listarr;
+      } else {
+        queue_constructor.songs.push(song);
+      }
       try {
         const connection = joinVoiceChannel({
           channelId: voiceChannel.id,
@@ -164,6 +222,7 @@ module.exports = {
         message.channel.send("Error while trying to establish connection.");
         throw err;
       }
+      //Save queue in json
       SaveQueue = JSON.stringify(queue_constructor.songs);
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
@@ -173,9 +232,11 @@ module.exports = {
         }
       });
     } else {
+      //If there's a server queue song is gonna get pused at the end of the queue
       server_queue.songs.push(song);
       message.channel.send(`🎶**${song.title}** added to the queue.`);
 
+      //Save queue in json
       SaveQueue = JSON.stringify(server_queue.songs);
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
