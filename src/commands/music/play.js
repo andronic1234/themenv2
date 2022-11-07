@@ -255,7 +255,12 @@ module.exports = {
       });
     } else {
       //If there's a server queue song is gonna get pused at the end of the queue
-      server_queue.songs.push(song);
+      if (listarr != undefined) {
+        server_queue.songs = server_queue.songs.concat(listarr)
+      } else {
+        server_queue.songs.push(song)
+      }
+    
       message.channel.send(`🎶**${song.title}** added to the queue.`);
 
       //Save queue in json
