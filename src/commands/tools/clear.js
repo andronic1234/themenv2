@@ -30,7 +30,7 @@ module.exports = {
     if(target) {
         target = interaction.options._hoistedOptions[1].user;
     }
-
+    if (amount > 99) return interaction.reply('Limit is 100 messages at a time.')
     const messages = await channel.messages.fetch({
       limit: amount + 1,
     });
