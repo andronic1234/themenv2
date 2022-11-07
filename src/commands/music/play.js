@@ -113,7 +113,7 @@ module.exports = {
         let Queue = fs.readFileSync("queue.json", "utf8");
         let CheckSkip = JSON.parse(Queue);
 
-        if (CheckSkip[search].skipped == true) {
+        if (CheckSkip[0].skipped == true) {
           if (Options[search] == undefined) {
             Options.push({
               guildID: interaction.guild.id,
