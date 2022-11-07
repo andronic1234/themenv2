@@ -49,6 +49,10 @@ module.exports = {
         text: `Page ${queuePage} out of ${Math.ceil(newDesc.length / 10)}`,
       });
 
+      let QueueEnd = new EmbedBuilder()
+      .setTitle('Interaction timed out')
+      .setColor('Grey')
+
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId("queue-btn-first")
@@ -112,9 +116,15 @@ module.exports = {
       });
       await interaction.editReply({
         embeds: [QueueEmbed],
-        components: [Queuebtns],
+        
       });
     });
+    queueButtonCollector.on('end', async () => {
+      await interaction.editReply({
+        embeds: [QueueEnd],
+        components: [],
+      });
+    })
     await interaction.editReply({
       embeds: [QueueEmbed],
       components: [Queuebtns],

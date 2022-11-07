@@ -100,15 +100,17 @@ module.exports = {
           return console.log(err);
         }
       });
-      
+
       let Options = fs.readFileSync("options.json", "utf8");
-      if (Options != ""){
-      Options = JSON.parse(Options);
+      if (Options != "") {
+        Options = JSON.parse(Options);
       } else {
-        Options = []
+        Options = [];
       }
       //Skipping event
-      let search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`)
+      let search = Options.findIndex(
+        (ID) => ID.guildID == `${interaction.guild.id}`
+      );
       player.on(AudioPlayerStatus.Paused, () => {
         let Queue = fs.readFileSync("queue.json", "utf8");
         let CheckSkip = JSON.parse(Queue);
@@ -120,7 +122,7 @@ module.exports = {
               shuffle: false,
               loop: false,
             });
-            search = Options.length - 1
+            search = Options.length - 1;
           }
           //Shuffle & Loop on
           if (Options[search].loop == true && Options[search].shuffle == true) {
@@ -166,9 +168,9 @@ module.exports = {
             shuffle: false,
             loop: false,
           });
-          search = Options.length - 1
+          search = Options.length - 1;
         }
-        
+
         //Shuffle & Loop on
         if (Options[search].loop == true && Options[search].shuffle == true) {
           song_queue.songs.push(song_queue.songs.shift());
@@ -256,11 +258,11 @@ module.exports = {
     } else {
       //If there's a server queue song is gonna get pused at the end of the queue
       if (listarr != undefined) {
-        server_queue.songs = server_queue.songs.concat(listarr)
+        server_queue.songs = server_queue.songs.concat(listarr);
       } else {
-        server_queue.songs.push(song)
+        server_queue.songs.push(song);
       }
-    
+
       message.channel.send(`🎶**${song.title}** added to the queue.`);
 
       //Save queue in json

@@ -3,7 +3,9 @@ const fs = require("fs");
 const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("skip").setDescription("Skips current song"),
+  data: new SlashCommandBuilder()
+    .setName("skip")
+    .setDescription("Skips current song"),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,
@@ -14,7 +16,11 @@ module.exports = {
     let Queue = fs.readFileSync("queue.json", "utf8");
     Queue = JSON.parse(Queue);
     var noQueue = "There is no song to skip men sorri 😔";
-    if (!Queue || Queue.length < 2 || getVoiceConnection(interaction.guild.id) == undefined) {
+    if (
+      !Queue ||
+      Queue.length < 2 ||
+      getVoiceConnection(interaction.guild.id) == undefined
+    ) {
       return interaction.editReply({
         content: noQueue,
       });
