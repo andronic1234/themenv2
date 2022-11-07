@@ -42,7 +42,6 @@ module.exports = {
     //Searches string with ytsearch
 
     let song;
-    console.log(input);
     if (input.includes("playlist?list=")) {
       let listID = input.substr(input.search("list=") + 5, 34);
       const list = await yts({ listId: listID });
@@ -101,17 +100,30 @@ module.exports = {
           return console.log(err);
         }
       });
-
+      
       let Options = fs.readFileSync("options.json", "utf8");
+      if (Options != ""){
       Options = JSON.parse(Options);
+      } else {
+        Options = []
+      }
       //Skipping event
+      let search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`)
       player.on(AudioPlayerStatus.Paused, () => {
         let Queue = fs.readFileSync("queue.json", "utf8");
         let CheckSkip = JSON.parse(Queue);
 
-        if (CheckSkip[0].skipped == true) {
+        if (CheckSkip[search].skipped == true) {
+          if (Options[search] == undefined) {
+            Options.push({
+              guildID: interaction.guild.id,
+              shuffle: false,
+              loop: false,
+            });
+            search = Options.length - 1
+          }
           //Shuffle & Loop on
-          if (Options[0].loop == true && Options[0].shuffle == true) {
+          if (Options[search].loop == true && Options[search].shuffle == true) {
             song_queue.songs.push(song_queue.songs.shift());
             song_queue.songs.sort((a, b) => 0.5 - Math.random());
             video_player(guild, song_queue.songs[0]);
@@ -119,14 +131,14 @@ module.exports = {
             return;
           }
           //Loop on
-          if (Options[0].loop == true) {
+          if (Options[search].loop == true) {
             song_queue.songs.push(song_queue.songs.shift());
             video_player(guild, song_queue.songs[0]);
             player.unpause();
             return;
           } else if (song_queue.songs.length > 1) {
             //Shuffle on
-            if (Options[0].shuffle == true) {
+            if (Options[search].shuffle == true) {
               song_queue.songs.shift();
               song_queue.songs.sort((a, b) => 0.5 - Math.random());
               video_player(guild, song_queue.songs[0]);
@@ -148,18 +160,28 @@ module.exports = {
       });
       player.on(AudioPlayerStatus.Idle, async () => {
         await delay(500);
-
         //Shuffle & Loop on
-        if (Options[0].loop == true && Options[0].shuffle == true) {
+        if (Options[search] == undefined) {
+          Options.push({
+            guildID: interaction.guild.id,
+            shuffle: false,
+            loop: false,
+          });
+          search = Options.length - 1
+        }
+
+        if (Options[search].loop == true && Options[search].shuffle == true) {
           song_queue.songs.push(song_queue.songs.shift());
           song_queue.songs.sort((a, b) => 0.5 - Math.random());
+          video_player(guild, song_queue.songs[0]);
         }
         //Loop on
-        if (Options[0].loop == true) {
+        if (Options[search].loop == true) {
           song_queue.songs.push(song_queue.songs.shift());
+          video_player(guild, song_queue.songs[0]);
         } else if (song_queue.songs.length > 1) {
           //Shuffle on
-          if (Options[0].shuffle == true) {
+          if (Options[search].shuffle == true) {
             song_queue.songs.shift();
             song_queue.songs.sort((a, b) => 0.5 - Math.random());
             //Shift queue

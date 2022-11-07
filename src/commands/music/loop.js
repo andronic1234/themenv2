@@ -10,16 +10,40 @@ module.exports = {
 
     let newMessage;
 
-    let Options = fs.readFileSync("options.json", "utf8");
-    Options = JSON.parse(Options);
-
-
-    if (Options[0].loop == false) {
-      Options[0].loop = true;
-      newMessage = "Looping is enabled.";
+    let Options;
+    Options = fs.readFileSync("options.json", "utf8");
+    if (Options != "") {
+      Options = JSON.parse(Options);
     } else {
-      Options[0].loop = false;
-      newMessage = "Looping is disabled.";
+      Options = [];
+    }
+    let search;
+    let result = -1;
+
+    search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`);
+    if (search > result) {
+      result = search;
+    }
+
+    try {
+      if (result == -1) {
+        Options.push({
+          guildID: interaction.guild.id,
+          shuffle: false,
+          loop: false,
+        });
+        result = Options.length - 1;
+      }
+      if (Options[result].loop == false) {
+        Options[result].loop = true;
+        newMessage = "Looping is enabled";
+      } else {
+        Options[result].loop = false;
+        newMessage = "Looping is disabled";
+      }
+    } catch (err) {
+      console.log(err);
+      newMessage = "There was an error while trying to execute this command";
     }
 
     let SaveOpt = JSON.stringify(Options);
