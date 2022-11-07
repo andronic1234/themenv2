@@ -2,23 +2,49 @@ const { SlashCommandBuilder } = require("discord.js");
 const fs = require("fs");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("shuffle").setDescription("Shuffles Queue"),
+  data: new SlashCommandBuilder()
+    .setName("shuffle")
+    .setDescription("Shuffles Queue"),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
     let newMessage;
 
-    let Options = fs.readFileSync("options.json", "utf8");
-    Options = JSON.parse(Options);
-
-
-    if (Options[0].shuffle == false) {
-      Options[0].shuffle = true;
-      newMessage = "Shuffling is enabled.";
+    let Options;
+    Options = fs.readFileSync("options.json", "utf8");
+    if (Options != "") {
+      Options = JSON.parse(Options);
     } else {
-      Options[0].shuffle = false;
-      newMessage = "Shuffling is disabled.";
+      Options = [];
+    }
+    let search;
+    let result = -1;
+
+    search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`);
+    if (search > result) {
+      result = search;
+    }
+
+    try {
+      if (result == -1) {
+        Options.push({
+          guildID: interaction.guild.id,
+          shuffle: false,
+          loop: false,
+        });
+        result = Options.length - 1;
+      }
+      if (Options[result].shuffle == false) {
+        Options[result].shuffle = true;
+        newMessage = "Shuffling is enabled";
+      } else {
+        Options[result].shuffle = false;
+        newMessage = "Shuffling is disabled";
+      }
+    } catch (err) {
+      console.log(err);
+      newMessage = "There was an error while trying to execute this command";
     }
 
     let SaveOpt = JSON.stringify(Options);
