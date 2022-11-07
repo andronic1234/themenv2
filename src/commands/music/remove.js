@@ -17,7 +17,7 @@ module.exports = {
     let input = interaction.options._hoistedOptions[0].value;
     let isnum = /^\d+$/.test(input);
     if (isnum == true) {
-        newMessage = `Received number: ${input}`
+        newMessage = `Removing song with number: ${input}`
     } else {
         newMessage = `${input} is not a number men`
     }
