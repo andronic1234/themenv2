@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,9 +17,11 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction, client) {
-    // if (!interaction.member.permissions.has("MANAGE_MESSAGES")) {
-    //   return interaction.reply("You don't have the permission for that");
-    // }
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      return interaction.reply("You don't have the permission for that");
+    }
     // console.log(interaction.options._hoistedOptions)
     const { channel, options } = interaction;
 
@@ -54,5 +56,7 @@ module.exports = {
         interaction.reply({ embeds: [res] });
       });
     }
+    await delay(10000)
+    channel.bulkDelete(1)
   },
 };
