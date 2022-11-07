@@ -160,7 +160,6 @@ module.exports = {
       });
       player.on(AudioPlayerStatus.Idle, async () => {
         await delay(500);
-        //Shuffle & Loop on
         if (Options[search] == undefined) {
           Options.push({
             guildID: interaction.guild.id,
@@ -169,11 +168,12 @@ module.exports = {
           });
           search = Options.length - 1
         }
-
+        
+        //Shuffle & Loop on
         if (Options[search].loop == true && Options[search].shuffle == true) {
           song_queue.songs.push(song_queue.songs.shift());
           song_queue.songs.sort((a, b) => 0.5 - Math.random());
-          video_player(guild, song_queue.songs[0]);
+          return video_player(guild, song_queue.songs[0]);
         }
         //Loop on
         if (Options[search].loop == true) {
