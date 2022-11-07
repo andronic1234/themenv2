@@ -51,7 +51,7 @@ module.exports = {
 
       let QueueEnd = new EmbedBuilder()
       .setTitle('Interaction timed out')
-      .setColor('Grey')
+      .setColor('DarkGrey')
 
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
