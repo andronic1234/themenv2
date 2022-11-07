@@ -2,7 +2,9 @@ const { SlashCommandBuilder } = require("discord.js");
 const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("pause").setDescription("Pauses and Unpauses current song"),
+  data: new SlashCommandBuilder()
+    .setName("pause")
+    .setDescription("Pauses and Unpauses current song"),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,

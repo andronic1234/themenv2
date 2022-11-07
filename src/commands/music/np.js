@@ -1,9 +1,11 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const fs = require("fs");
-const { getVoiceConnection } = require("@discordjs/voice")
+const { getVoiceConnection } = require("@discordjs/voice");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("np").setDescription("Shows current song"),
+  data: new SlashCommandBuilder()
+    .setName("np")
+    .setDescription("Shows current song"),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
       fetchReply: true,
@@ -19,16 +21,16 @@ module.exports = {
     Queue = JSON.parse(Queue);
 
     let NowPlaying = new EmbedBuilder()
-        .setTitle("🎶 **Now Playing** 🎶")
-        .setColor("DarkGreen")
-        .setThumbnail(Queue[0].thumb)
-        .addFields([
-          {
-            name: `Song Information:`,
-            value: `[${Queue[0].title}](${Queue[0].url})\n\n**Channel: __${Queue[0].chann}__\nLength: __${Queue[0].time}__**`,
-            inline: false,
-          },
-        ]);
+      .setTitle("🎶 **Now Playing** 🎶")
+      .setColor("DarkGreen")
+      .setThumbnail(Queue[0].thumb)
+      .addFields([
+        {
+          name: `Song Information:`,
+          value: `[${Queue[0].title}](${Queue[0].url})\n\n**Channel: __${Queue[0].chann}__\nLength: __${Queue[0].time}__**`,
+          inline: false,
+        },
+      ]);
 
     await interaction.editReply({
       embeds: [NowPlaying],

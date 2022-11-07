@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  PermissionsBitField,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,18 +23,23 @@ module.exports = {
   async execute(interaction, client) {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+    if (
+      !interaction.member.permissions.has(
+        PermissionsBitField.Flags.ManageMessages
+      )
+    ) {
       return interaction.reply("You don't have the permission for that");
     }
     // console.log(interaction.options._hoistedOptions)
     const { channel, options } = interaction;
 
     const amount = interaction.options._hoistedOptions[0].value;
-    var target = interaction.options._hoistedOptions[1]
-    if(target) {
-        target = interaction.options._hoistedOptions[1].user;
+    var target = interaction.options._hoistedOptions[1];
+    if (target) {
+      target = interaction.options._hoistedOptions[1].user;
     }
-    if (amount > 100) return interaction.reply('Limit is 100 messages at a time.')
+    if (amount > 100)
+      return interaction.reply("Limit is 100 messages at a time.");
     const messages = await channel.messages.fetch({
       limit: amount + 1,
     });
@@ -52,11 +61,13 @@ module.exports = {
       });
     } else {
       await channel.bulkDelete(amount, true).then((messages) => {
-        res.setDescription(`Deleted ${messages.size} messages from the channel.`);
+        res.setDescription(
+          `Deleted ${messages.size} messages from the channel.`
+        );
         interaction.reply({ embeds: [res] });
       });
     }
-    await delay(10000)
-    channel.bulkDelete(1)
+    await delay(10000);
+    channel.bulkDelete(1);
   },
 };

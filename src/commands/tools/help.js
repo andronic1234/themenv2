@@ -24,6 +24,11 @@ module.exports = {
           inline: false,
         },
         {
+          name: `__/clear__`,
+          value: `Clears messages from the channel`,
+          inline: false,
+        },
+        {
           name: `__/darryn__`,
           value: `Call Ben and ask him a question.`,
           inline: false,
@@ -38,6 +43,9 @@ module.exports = {
           value: `Display the Men Leaderboards.`,
           inline: false,
         },
+
+
+        
         {
           name: `__/join__`,
           value: `Makes the Men join a Voice Channel.`,
