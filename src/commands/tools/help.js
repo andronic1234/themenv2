@@ -113,6 +113,11 @@ module.exports = {
           value: `Toggle Queue loop`,
           inline: false,
         },
+        {
+          name: `__/options__`,
+          value: `Shows music options`,
+          inline: false
+        }
       ]);
 
     let HelpEnd = new EmbedBuilder()
