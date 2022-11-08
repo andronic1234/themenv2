@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -43,9 +49,20 @@ module.exports = {
           value: `Display the Men Leaderboards.`,
           inline: false,
         },
-
-
-        
+      ]);
+    const Musicembed = new EmbedBuilder()
+      .setTitle(`**Music Menu**`)
+      .setColor("DarkBlue")
+      .setThumbnail(interaction.guild.iconURL())
+      .setTimestamp(Date.now())
+      .setAuthor({
+        iconURL: interaction.user.displayAvatarURL(),
+        name: interaction.user.tag,
+      })
+      .setFooter({
+        text: `Bot made by LilB`,
+      })
+      .addFields([
         {
           name: `__/join__`,
           value: `Makes the Men join a Voice Channel.`,
@@ -82,6 +99,11 @@ module.exports = {
           inline: false,
         },
         {
+          name: `__/remove__`,
+          value: `Removes song from the queue`,
+          inline: false,
+        },
+        {
           name: `__/shuffle__`,
           value: `Toggle Queue shuffle`,
           inline: false,
@@ -92,8 +114,58 @@ module.exports = {
           inline: false,
         },
       ]);
+
+    let HelpEnd = new EmbedBuilder()
+      .setTitle("Interaction timed out")
+      .setColor("DarkGrey");
+
+    const Helpbtns = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("help-menu")
+        .setEmoji("🛠️")
+        .setStyle(ButtonStyle.Primary),
+
+      new ButtonBuilder()
+        .setCustomId("music-menu")
+        .setEmoji(`🎶`)
+        .setStyle(ButtonStyle.Primary)
+    );
+    const helpButtonCollector =
+      interaction.channel.createMessageComponentCollector({ time: 60000 });
+    helpButtonCollector.on("collect", async (i) => {
+      try {
+        let id = i.customId;
+
+        if (id === "help-menu") {
+          await interaction.editReply({
+            embeds: [Helpembed],
+            components: [Helpbtns],
+            ephemeral: true,
+          });
+        } else if (id === "music-menu") {
+          await interaction.editReply({
+            embeds: [Musicembed],
+            components: [Helpbtns],
+            ephemeral: true,
+          });
+        }
+        try {
+          await i.deferUpdate();
+        } catch {}
+      } catch (e) {
+        return console.log(e);
+      }
+    });
+    helpButtonCollector.on("end", async () => {
+      await interaction.editReply({
+        embeds: [HelpEnd],
+        components: [],
+      });
+    });
+
     await interaction.reply({
       embeds: [Helpembed],
+      components: [Helpbtns],
       ephemeral: true,
     });
   },
