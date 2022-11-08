@@ -3,7 +3,9 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("remove")
-    .setDescription("WIP")
+    .setDescription(
+      "(WIP) Removes songs from queue, to remove multiple songs split song numbers with commas (,)"
+    )
     .addStringOption((option) =>
       option
         .setName("song")
@@ -14,12 +16,18 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
+
     let input = interaction.options._hoistedOptions[0].value;
     let isnum = /^\d+$/.test(input);
     if (isnum == true) {
       newMessage = `Removing song with number: ${input}`;
     } else {
-      newMessage = `${input} is not a number men`;
+      try {
+      var b = input.split(',').map(Number);
+      console.log(b)
+      } catch {
+        newMessage = `${input} is not a number men`;
+      }
     }
 
     await interaction.editReply({
