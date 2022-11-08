@@ -1,5 +1,11 @@
 const { connect } = require("mongoose");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  VoiceState,
+} = require("discord.js");
+const { getVoiceConnection } = require("@discordjs/voice");
 const fs = require("fs");
 const profileModel = require("./schema/profileSchema");
 
@@ -12,6 +18,8 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
   ],
 });
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 client.commands = new Collection();
 client.buttons = new Collection();
@@ -72,10 +80,33 @@ async () => {
     console.log(err);
   }
 };
+//VoiceStateUpdate event
+client.on("voiceStateUpdate", async (oldState, newState) => {
+  let curVoiceChan = client.channels.cache.get(newState.channelId);
+  if (curVoiceChan == null) {
+    curVoiceChan = client.channels.cache.get(oldState.channelId);
+  }
+  try {
+    if (curVoiceChan.members.size == 1) {
+      let getchannid = newState.guild.id;
+      const connection = getVoiceConnection(getchannid);
+      if (connection) {
+        await delay(300000);
+        if (curVoiceChan.members.size == 1) {
+          connection.destroy();
+        }
+      }
+    }
+  } catch {
+    console.log("failed");
+  }
+});
 
 client.handleEvents();
 client.handleCommands();
-client.login('OTExNzI4NDM3Mzk0MjkyNzk2.YZlnRg.TLMPR0zypba8KKv-R-RyUpuxE38');
+client.login("OTExNzI4NDM3Mzk0MjkyNzk2.YZlnRg.TLMPR0zypba8KKv-R-RyUpuxE38");
 (async () => {
-  await connect('mongodb+srv://Andronic:pizzayolo12@themen.jazbs.mongodb.net/Men?retryWrites=true&w=majority').catch(console.error);
+  await connect(
+    "mongodb+srv://Andronic:pizzayolo12@themen.jazbs.mongodb.net/Men?retryWrites=true&w=majority"
+  ).catch(console.error);
 })();
