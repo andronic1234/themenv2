@@ -97,8 +97,8 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         }
       }
     }
-  } catch {
-    console.log("failed");
+  } catch (err) {
+    console.log(err);
   }
 });
 
