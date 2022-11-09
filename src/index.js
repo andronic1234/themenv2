@@ -104,9 +104,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
 client.handleEvents();
 client.handleCommands();
-client.login("OTExNzI4NDM3Mzk0MjkyNzk2.YZlnRg.TLMPR0zypba8KKv-R-RyUpuxE38");
+client.login(process.env.BOT_TOKEN);
 (async () => {
-  await connect(
-    "mongodb+srv://Andronic:pizzayolo12@themen.jazbs.mongodb.net/Men?retryWrites=true&w=majority"
-  ).catch(console.error);
+  await connect(process.env.DB_TOKEN).catch(console.error);
 })();
