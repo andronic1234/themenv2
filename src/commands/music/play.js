@@ -194,11 +194,20 @@ module.exports = {
           //Last song before dc
         } else {
           song_queue.songs.shift();
-          await delay(30000);
-          if (song_queue.songs.length != 0) return;
           try {
-            song_queue.connection.destroy();
-          } catch {}
+            for (var i = 0; i < 60; i++) {
+              await delay(2000);
+              if (song_queue.songs.length != 0) {
+                video_player(guild, song_queue.songs[0]);
+                i = 61;
+              }
+            }
+            if (song_queue.songs.length == 0) {
+              song_queue.connection.destroy();
+            }
+          } catch (err) {
+            console.log(err);
+          }
         }
       });
       //Now Playing embed
