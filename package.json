@@ -28,6 +28,6 @@
     "ytdl-core": "^4.11.2"
   },
   "devDependencies": {
-    "dotenv": "^16.0.1"
+    "dotenv": "^16.0.3"
   }
 }
