@@ -9,7 +9,7 @@ module.exports = {
       fetchReply: true,
     });
 
-    const newMessage = `**PONG!** 🏓\nAPI Latency is ${
+    const newMessage = `**PONG!** 🏓\nAPI Latency: ${
       client.ws.ping
     }ms\nClient Ping: ${
       message.createdTimestamp - interaction.createdTimestamp
