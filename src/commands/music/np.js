@@ -20,6 +20,13 @@ module.exports = {
 
     Queue = JSON.parse(Queue);
 
+    if (interaction.guild.id != Queue[Queue.length - 1].id) {
+      let Errmsg = "Error while fetching queue, try again later";
+      return interaction.editReply({
+        content: Errmsg,
+      });
+    }
+
     let NowPlaying = new EmbedBuilder()
       .setTitle("🎶 **Now Playing** 🎶")
       .setColor("DarkGreen")

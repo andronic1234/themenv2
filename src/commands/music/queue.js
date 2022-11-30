@@ -27,8 +27,13 @@ module.exports = {
     Queue = JSON.parse(Queue);
 
     let newDesc = [];
-
-    for (let i = 0; i < Queue.length; i++) {
+    if (interaction.guild.id != Queue[Queue.length - 1].id) {
+      let Errmsg = "Error while fetching queue, try again later";
+      return interaction.editReply({
+        content: Errmsg,
+      });
+    }
+    for (let i = 0; i < Queue.length - 1; i++) {
       newDesc.push(`**#${i + 1}** [${Queue[i].title}](${Queue[i].url})`);
     }
 
@@ -49,9 +54,9 @@ module.exports = {
         text: `Page ${queuePage} out of ${Math.ceil(newDesc.length / 10)}`,
       });
 
-      let QueueEnd = new EmbedBuilder()
-      .setTitle('Interaction timed out')
-      .setColor('DarkGrey')
+    let QueueEnd = new EmbedBuilder()
+      .setTitle("Interaction timed out")
+      .setColor("DarkGrey");
 
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -116,15 +121,14 @@ module.exports = {
       });
       await interaction.editReply({
         embeds: [QueueEmbed],
-        
       });
     });
-    queueButtonCollector.on('end', async () => {
+    queueButtonCollector.on("end", async () => {
       await interaction.editReply({
         embeds: [QueueEnd],
         components: [],
       });
-    })
+    });
     await interaction.editReply({
       embeds: [QueueEmbed],
       components: [Queuebtns],

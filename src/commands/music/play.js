@@ -40,7 +40,7 @@ module.exports = {
     const server_queue = queue.get(interaction.guild.id);
 
     //Searches string with ytsearch
-
+    let Guild_ID = { id: interaction.guild.id };
     let song;
     if (input.includes("playlist?list=")) {
       let listID = input.substr(input.search("list=") + 5, 34);
@@ -92,7 +92,7 @@ module.exports = {
       } catch {}
       song_queue.connection.subscribe(player);
 
-      SaveQueue = JSON.stringify(song_queue.songs);
+      SaveQueue = JSON.stringify(song_queue.songs.concat(Guild_ID));
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
         if (err) {
@@ -256,7 +256,8 @@ module.exports = {
         throw err;
       }
       //Save queue in json
-      SaveQueue = JSON.stringify(queue_constructor.songs);
+
+      SaveQueue = JSON.stringify(queue_constructor.songs.concat(Guild_ID));
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
         if (err) {
@@ -265,7 +266,7 @@ module.exports = {
         }
       });
     } else {
-      //If there's a server queue song is gonna get pused at the end of the queue
+      //If there's a server queue song is gonna get pushed at the end of the queue
       if (listarr != undefined) {
         server_queue.songs = server_queue.songs.concat(listarr);
       } else {
@@ -275,7 +276,7 @@ module.exports = {
       message.channel.send(`🎶**${song.title}** added to the queue.`);
 
       //Save queue in json
-      SaveQueue = JSON.stringify(server_queue.songs);
+      SaveQueue = JSON.stringify(server_queue.songs.concat(Guild_ID));
 
       fs.writeFile("queue.json", SaveQueue, function (err) {
         if (err) {
