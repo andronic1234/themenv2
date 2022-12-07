@@ -40,7 +40,3 @@
 - yt-search
 
 - ytdl-core
-
-<br><br><br><br>
-  
-<img src= "https://cdn.discordapp.com/attachments/810982605780418580/1039835487566823464/Mounssif.png" width= 500>
