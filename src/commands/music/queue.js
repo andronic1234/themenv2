@@ -106,7 +106,6 @@ module.exports = {
         } else if (id === "queue-btn-previous") {
           if (queuePage > 1) {
             queuePage--;
-          } else {
           }
         }
         try {
