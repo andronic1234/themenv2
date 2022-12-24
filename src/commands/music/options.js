@@ -1,22 +1,26 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const fs = require("fs");
+const GetOptions = require("./play");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("options")
     .setDescription("Checks music options"),
   async execute(interaction, client) {
-    let Options = fs.readFileSync("options.json", "utf8");
-    let search;
-    if (Options != "") {
-      Options = JSON.parse(Options);
-      search = Options.findIndex(
-        (ID) => ID.guildID == `${interaction.guild.id}`
-      );
-    } else {
-      Options = [{ shuffle: false, loop: false }];
-      search = 0;
+    let Options = GetOptions.options;
+
+    let search = Options.findIndex(
+      (ID) => ID.guildID == `${interaction.guild.id}`
+    );
+
+    if (search == -1) {
+      Options.push({
+        guildID: interaction.guild.id,
+        shuffle: false,
+        loop: false,
+      });
     }
+    search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`);
+
     let a, b;
     if (Options[search].shuffle == false) {
       a = "**off**";

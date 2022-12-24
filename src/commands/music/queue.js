@@ -5,8 +5,8 @@ const {
   ActionRowBuilder,
   ButtonStyle,
 } = require("discord.js");
-const fs = require("fs");
 const { getVoiceConnection } = require("@discordjs/voice");
+const GetQueue = require("./play");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,25 +16,27 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-
-    let Queue = fs.readFileSync("queue.json", "utf8");
+    var song_queue = GetQueue.Queue.get(interaction.guild.id);
     var noQueue = "There is no queue men sorri 😔";
-    if (!Queue || getVoiceConnection(interaction.guild.id) == undefined)
+    var playerconnection = getVoiceConnection(interaction.guild.id)._state
+      .subscription.player;
+    if (
+      getVoiceConnection(interaction.guild.id) == undefined ||
+      !song_queue ||
+      !song_queue.songs ||
+      playerconnection._state.status == "idle"
+    )
       return interaction.editReply({
         content: noQueue,
       });
 
-    Queue = JSON.parse(Queue);
-
     let newDesc = [];
-    if (interaction.guild.id != Queue[Queue.length - 1].id) {
-      let Errmsg = "Error while fetching queue, try again later";
-      return interaction.editReply({
-        content: Errmsg,
-      });
-    }
-    for (let i = 0; i < Queue.length - 1; i++) {
-      newDesc.push(`**#${i + 1}** [${Queue[i].title}](${Queue[i].url})`);
+    for (let i = 0; i < song_queue.songs.length; i++) {
+      newDesc.push(
+        `**#${i + 1}** [${song_queue.songs[i].title}](${
+          song_queue.songs[i].url
+        })`
+      );
     }
 
     let queuePage = 1;

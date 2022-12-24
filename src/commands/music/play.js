@@ -8,10 +8,12 @@ const {
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
-const fs = require("fs");
 
 const queue = new Map();
+let Options = [];
 module.exports = {
+  Queue: queue,
+  options: Options,
   data: new SlashCommandBuilder()
     .setName("play")
     .setDescription("Plays a song from YouTube.")
@@ -26,8 +28,6 @@ module.exports = {
       fetchReply: true,
     });
     message.delete(200);
-
-    let SaveQueue;
 
     // Box Input, basically the args
     let input = interaction.options._hoistedOptions[0].value;
@@ -92,30 +92,12 @@ module.exports = {
       } catch {}
       song_queue.connection.subscribe(player);
 
-      SaveQueue = JSON.stringify(song_queue.songs.concat(Guild_ID));
-
-      fs.writeFile("queue.json", SaveQueue, function (err) {
-        if (err) {
-          console.log("Error while saving queue.");
-          return console.log(err);
-        }
-      });
-
-      let Options = fs.readFileSync("options.json", "utf8");
-      if (Options != "") {
-        Options = JSON.parse(Options);
-      } else {
-        Options = [];
-      }
       //Skipping event
       let search = Options.findIndex(
         (ID) => ID.guildID == `${interaction.guild.id}`
       );
       player.on(AudioPlayerStatus.Paused, () => {
-        let Queue = fs.readFileSync("queue.json", "utf8");
-        let CheckSkip = JSON.parse(Queue);
-
-        if (CheckSkip[0].skipped == true) {
+        if (song_queue.songs[0].skipped == true) {
           if (Options[search] == undefined) {
             Options.push({
               guildID: interaction.guild.id,
@@ -255,16 +237,6 @@ module.exports = {
         message.channel.send("Error while trying to establish connection.");
         throw err;
       }
-      //Save queue in json
-
-      SaveQueue = JSON.stringify(queue_constructor.songs.concat(Guild_ID));
-
-      fs.writeFile("queue.json", SaveQueue, function (err) {
-        if (err) {
-          console.log("Error while saving queue.");
-          return console.log(err);
-        }
-      });
     } else {
       //If there's a server queue song is gonna get pushed at the end of the queue
       if (listarr != undefined) {
@@ -274,16 +246,6 @@ module.exports = {
       }
 
       message.channel.send(`🎶**${song.title}** added to the queue.`);
-
-      //Save queue in json
-      SaveQueue = JSON.stringify(server_queue.songs.concat(Guild_ID));
-
-      fs.writeFile("queue.json", SaveQueue, function (err) {
-        if (err) {
-          console.log("Error while saving queue.");
-          return console.log(err);
-        }
-      });
     }
   },
 };

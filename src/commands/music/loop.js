@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const fs = require("fs");
+const GetOptions = require("./play");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("loop").setDescription("Loops Queue"),
@@ -9,18 +9,12 @@ module.exports = {
     });
 
     let newMessage;
-
-    let Options;
-    Options = fs.readFileSync("options.json", "utf8");
-    if (Options != "") {
-      Options = JSON.parse(Options);
-    } else {
-      Options = [];
-    }
-    let search;
+    let Options = GetOptions.options;
     let result = -1;
 
-    search = Options.findIndex((ID) => ID.guildID == `${interaction.guild.id}`);
+    let search = Options.findIndex(
+      (ID) => ID.guildID == `${interaction.guild.id}`
+    );
     if (search > result) {
       result = search;
     }
@@ -45,15 +39,6 @@ module.exports = {
       console.log(err);
       newMessage = "There was an error while trying to execute this command";
     }
-
-    let SaveOpt = JSON.stringify(Options);
-
-    fs.writeFile("options.json", SaveOpt, function (err) {
-      if (err) {
-        console.log("Error while saving options.");
-        return console.log(err);
-      }
-    });
 
     await interaction.editReply({
       content: newMessage,
