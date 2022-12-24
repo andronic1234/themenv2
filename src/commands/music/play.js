@@ -186,6 +186,7 @@ module.exports = {
             }
             if (song_queue.songs.length == 0) {
               song_queue.connection.destroy();
+              queue.delete(interaction.guild.id);
             }
           } catch (err) {
             console.log(err);

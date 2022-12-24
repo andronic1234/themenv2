@@ -49,6 +49,11 @@ module.exports = {
           value: `Display the Men Leaderboards.`,
           inline: false,
         },
+        {
+          name: `__/search__`,
+          value: `Searches for a Guild or Player in RealmEye.`,
+          inline: false,
+        },
       ]);
     const Musicembed = new EmbedBuilder()
       .setTitle(`**Music Menu**`)
@@ -116,8 +121,8 @@ module.exports = {
         {
           name: `__/options__`,
           value: `Shows music options`,
-          inline: false
-        }
+          inline: false,
+        },
       ]);
 
     let HelpEnd = new EmbedBuilder()
