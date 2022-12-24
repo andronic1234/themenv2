@@ -89,9 +89,6 @@ module.exports = {
           errstr = "";
         }
       });
-    let SearchEnd = new EmbedBuilder()
-      .setTitle("Interaction timed out")
-      .setColor("DarkGrey");
     let ResultsEmbed = new EmbedBuilder()
       .setTitle(`Data ${errstr}Found:`)
       .setDescription(`${newDesc}`);
@@ -181,9 +178,9 @@ module.exports = {
     });
     searchButtonCollector.on("end", async () => {
       await interaction.editReply({
-        embeds: [SearchEnd],
         components: [],
       });
+      message.channel.send("Interaction timed out.");
       Chars = [];
     });
     await interaction.editReply({
