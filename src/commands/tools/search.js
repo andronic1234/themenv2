@@ -126,7 +126,7 @@ module.exports = {
     const searchButtonCollector =
       interaction.channel.createMessageComponentCollector({
         filter,
-        time: 30000,
+        time: 60000,
       });
     searchButtonCollector.on("collect", async (i) => {
       try {
