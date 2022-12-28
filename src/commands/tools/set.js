@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder} = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  AttachmentBuilder,
+} = require("discord.js");
 const { createCanvas, loadImage } = require("canvas");
 const fetch = require("node-fetch");
 
@@ -22,8 +26,8 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-    let player = interaction.options._hoistedOptions[0].value
-    let character = interaction.options._hoistedOptions[1].value
+    let player = interaction.options._hoistedOptions[0].value;
+    let character = interaction.options._hoistedOptions[1].value;
     player = player.charAt(0).toUpperCase() + player.slice(1);
     character = character.charAt(0).toUpperCase() + character.slice(1);
     try {
@@ -46,35 +50,27 @@ module.exports = {
 
       context.fillStyle = "#00000000";
       context.fillRect(0, 0, width, height);
-
-      loadImage(
-        `https://realmeye-api.glitch.me/player/${player}/${character}/weapon`
-      ).then((image) => {
-        context.drawImage(image, 0, 0, 46, 46);
-        loadImage(
-          `https://realmeye-api.glitch.me/player/${player}/${character}/ability`
+      const item = ["weapon", "ability", "armor", "ring"];
+      for (let i = 0; i < item.length; i++) {
+        await loadImage(
+          `https://realmeye-api.glitch.me/player/${player}/${character}/${item[i]}`
         ).then((image) => {
-          context.drawImage(image, 46, 0, 46, 46);
-          loadImage(
-            `https://realmeye-api.glitch.me/player/${player}/${character}/armor`
-          ).then((image) => {
-            context.drawImage(image, 92, 0, 46, 46);
-            loadImage(
-              `https://realmeye-api.glitch.me/player/${player}/${character}/ring`
-            ).then((image) => {
-              context.drawImage(image, 138, 0, 46, 46);
-              const buffer = canvas.toBuffer("image/png");
-              const attachment = new AttachmentBuilder(buffer, {name: 'ItemSet.png'})
-                const SetEmbed = new EmbedBuilder()
-                .setTitle(`Set of ${player}'s ${character}`)
-              interaction.editReply({
-                embeds: [SetEmbed],
-                files: [attachment]
-              });
+          context.drawImage(image, 0 + i * 46, 0, 46, 46);
+          if (i + 1 == item.length) {
+            const buffer = canvas.toBuffer("image/png");
+            const attachment = new AttachmentBuilder(buffer, {
+              name: "ItemSet.png",
             });
-          });
+            const SetEmbed = new EmbedBuilder().setTitle(
+              `Set of ${player}'s ${character}`
+            );
+            interaction.editReply({
+              embeds: [SetEmbed],
+              files: [attachment],
+            });
+          }
         });
-      });
+      }
     }
   },
 };
