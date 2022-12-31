@@ -27,7 +27,7 @@ module.exports = {
     )
     .addStringOption((option) =>
       option
-        .setName("params")
+        .setName("name")
         .setDescription("Type the name you want to search here.")
         .setRequired(true)
     ),
