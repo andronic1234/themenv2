@@ -9,7 +9,6 @@ const fetch = require("node-fetch");
 let newDesc = [];
 let Name = [];
 let Chars = [];
-let errstr = "";
 let Page = 1;
 
 module.exports = {
@@ -48,12 +47,16 @@ module.exports = {
       embeds: [BufferEmbed],
       ephemeral: true,
     });
+    let error = false;
     await fetch(`https://realmeye-api.glitch.me/${input}/${secondInput}`)
       .then(async (res) => await res.json())
       .then((json) => {
         if (json.error) {
-          newDesc.push(`Error: ${json.error}`);
-          errstr = "not ";
+          error = true;
+          interaction.editReply({
+            content: `Error: ${json.error}`,
+            embeds: [],
+          });
           return;
         }
         if (input === "player") {
@@ -72,7 +75,6 @@ module.exports = {
                 __3__. [${json[0].CharacterList[i].items[2].title}](${json[0].CharacterList[i].items[2].url})  
                 __4__. [${json[0].CharacterList[i].items[3].title}](${json[0].CharacterList[i].items[3].url})**\n\n`);
           }
-          errstr = "";
         } else {
           Name.push(json[0].Guild);
           newDesc.push(`**Guild:** ${json[0].Guild} \n**Members:** ${json[0].Members} \n**Characters:** ${json[0].Characters} \n**Fame:** ${json[0].Fame} \n**Most Active on:** ${json[0].MostActiveOn} \n
@@ -86,11 +88,11 @@ module.exports = {
             Star Rank: ${json[0].GuildMemberData[i].star_rank} 
             Characters: ${json[0].GuildMemberData[i].characters}**\n\n`);
           }
-          errstr = "";
         }
       });
+    if (error == true) return;
     let ResultsEmbed = new EmbedBuilder()
-      .setTitle(`Data ${errstr}Found:`)
+      .setTitle(`Data Found:`)
       .setDescription(`${newDesc}`);
     let SecondEmbed = new EmbedBuilder()
       .setTitle(`Data of ${Name}:`)
@@ -177,6 +179,7 @@ module.exports = {
       }
     });
     searchButtonCollector.on("end", async () => {
+      Page = 1;
       await interaction.editReply({
         components: [],
       });
