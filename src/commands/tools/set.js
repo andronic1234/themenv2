@@ -42,6 +42,10 @@ module.exports = {
           }
         });
     } catch {
+      const ImgFound = new EmbedBuilder()
+        .setTitle("Set Found.")
+        .setDescription("**__Creating image__...**");
+      interaction.editReply({ embeds: [ImgFound] });
       const width = 184;
       const height = 46;
 
@@ -61,9 +65,10 @@ module.exports = {
             const attachment = new AttachmentBuilder(buffer, {
               name: "ItemSet.png",
             });
-            const SetEmbed = new EmbedBuilder().setTitle(
-              `Set of ${player}'s ${character}`
-            );
+            const SetEmbed = new EmbedBuilder()
+              .setTitle(`Set of ${player}'s ${character}`)
+              .setImage("attachment://ItemSet.png")
+              .setColor("Gold");
             interaction.editReply({
               embeds: [SetEmbed],
               files: [attachment],
