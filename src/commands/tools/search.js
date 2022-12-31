@@ -183,7 +183,6 @@ module.exports = {
       await interaction.editReply({
         components: [],
       });
-      message.channel.send("Interaction timed out.");
       Chars = [];
     });
     await interaction.editReply({
