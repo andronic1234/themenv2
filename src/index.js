@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 const { connect } = require("mongoose");
 const {
   Client,
@@ -9,6 +9,7 @@ const {
 const { getVoiceConnection } = require("@discordjs/voice");
 const fs = require("fs");
 const profileModel = require("./schema/profileSchema");
+const GetQueue = require("./commands/music/play");
 
 const client = new Client({
   intents: [
@@ -23,7 +24,6 @@ const client = new Client({
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 client.commands = new Collection();
-client.buttons = new Collection();
 client.commandArray = [];
 
 const functionFolders = fs.readdirSync(`./src/functions`);
@@ -97,6 +97,13 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
           connection.destroy();
         }
       }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  try {
+    if (oldState.id == client.user.id) {
+      GetQueue.Queue.delete(newState.guild.id);
     }
   } catch (err) {
     console.log(err);
