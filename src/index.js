@@ -83,9 +83,13 @@ async () => {
 };
 //VoiceStateUpdate event
 client.on("voiceStateUpdate", async (oldState, newState) => {
+  var song_queue = GetQueue.Queue.get(newState.guild.id);
   let curVoiceChan = client.channels.cache.get(newState.channelId);
   if (curVoiceChan == null) {
     curVoiceChan = client.channels.cache.get(oldState.channelId);
+  }
+  if(curVoiceChan.members.get(process.env.BOT_ID) == undefined && song_queue.connection) {
+    song_queue.connection.destroy()
   }
   try {
     if (curVoiceChan.members.size == 1) {
@@ -95,15 +99,9 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         await delay(300000);
         if (curVoiceChan.members.size == 1) {
           connection.destroy();
+          GetQueue.Queue.delete(newState.guild.id);
         }
       }
-    }
-  } catch (err) {
-    console.log(err);
-  }
-  try {
-    if (oldState.id == client.user.id) {
-      GetQueue.Queue.delete(newState.guild.id);
     }
   } catch (err) {
     console.log(err);

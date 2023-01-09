@@ -18,13 +18,13 @@ module.exports = {
     });
     var song_queue = GetQueue.Queue.get(interaction.guild.id);
     var noQueue = "There is no queue men sorri 😔";
-    var playerconnection = getVoiceConnection(interaction.guild.id)._state
-      .subscription.player;
+
     if (
       getVoiceConnection(interaction.guild.id) == undefined ||
       !song_queue ||
       !song_queue.songs ||
-      playerconnection._state.status == "idle"
+      getVoiceConnection(interaction.guild.id)._state.subscription.player._state
+        .status == "idle"
     )
       return interaction.editReply({
         content: noQueue,
