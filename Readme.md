@@ -47,5 +47,3 @@
 - [yt-search](https://www.npmjs.com/package/yt-search)
 
 - [ytdl-core](https://www.npmjs.com/package/ytdl-core)
-
-- [node-canvas](https://www.npmjs.com/package/canvas)
