@@ -60,20 +60,21 @@ module.exports = {
           return;
         }
         if (input === "player") {
-          Name.push(json[0].Player);
+          Name.push(json.ProfileInfo?.PlayerName);
           newDesc.push(
-            `**Player:** __${json[0].Player}__ \n**Characters:** __${json[0].Characters}__ \n**Skins:** __${json[0].Skins}__ \n**Exaltations:** __${json[0].Exaltations}__ \n**Fame:** __${json[0].Fame}__ \n**Rank:** __${json[0].Rank}__ \n**Account Fame:** __${json[0].AccountFame}__`
+            `**Player:** __${json.ProfileInfo?.PlayerName}__ \n**Characters:** __${json.ProfileInfo?.Characters}__ \n**Skins:** __${json.ProfileInfo?.Skins}__ \n**Exaltations:** __${json.ProfileInfo?.Exaltations}__ \n**Fame:** __${json.ProfileInfo?.Fame}__ \n**Rank:** __${json.ProfileInfo?.Rank}__ \n**Account Fame:** __${json.ProfileInfo?.AccountFame}__`
           );
-          for (let i = 0; i < json[0].CharacterList.length; i++) {
-            Chars.push(`**Character: ${json[0].CharacterList[i].character} 
-                Level: ${json[0].CharacterList[i].level} 
-                Fame: ${json[0].CharacterList[i].fame} 
-                Ranking: ${json[0].CharacterList[i].pos} 
+          if (json.CharacterInfo.length == 0) return Chars.push(`No character data`);
+          for (let i = 0; i < json.CharacterInfo.length; i++) {
+            Chars.push(`**Character: ${json.CharacterInfo[i].character} 
+                Level: ${json.CharacterInfo[i].level} 
+                Fame: ${json.CharacterInfo[i].fame} 
+                Ranking: ${json.CharacterInfo[i].pos} 
                 Items: \n
-                __1__. [${json[0].CharacterList[i].items[0].title}](${json[0].CharacterList[i].items[0].url})  
-                __2__. [${json[0].CharacterList[i].items[1].title}](${json[0].CharacterList[i].items[1].url})
-                __3__. [${json[0].CharacterList[i].items[2].title}](${json[0].CharacterList[i].items[2].url})  
-                __4__. [${json[0].CharacterList[i].items[3].title}](${json[0].CharacterList[i].items[3].url})**\n\n`);
+                __1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url})  
+                __2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url})
+                __3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url})  
+                __4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`);
           }
         } else {
           Name.push(json[0].Guild);
