@@ -1,10 +1,12 @@
 const { SlashCommandBuilder } = require("discord.js");
+const { getVoiceConnection } = require("@discordjs/voice");
+const GetQueue = require("./play");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("remove")
     .setDescription(
-      "(WIP) Removes songs from queue, to remove multiple songs split song numbers with commas (,)"
+      "Removes songs from queue, to remove multiple songs split song numbers with commas (,)"
     )
     .addStringOption((option) =>
       option
@@ -16,15 +18,78 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-
+    var song_queue = GetQueue.Queue.get(interaction.guild.id);
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     let input = interaction.options._hoistedOptions[0].value;
+
+    let newMessage;
     let isnum = /^\d+$/.test(input);
+    if (!song_queue || getVoiceConnection(interaction.guild.id) == undefined)
+      return interaction.editReply({
+        content: "There is no queue men.",
+      });
+    if (song_queue.songs.length < 2 == undefined) {
+      return interaction.editReply({
+        content: "There is no song to skip men sorri 😔",
+      });
+    }
     if (isnum == true) {
+      if (input == 1) {
+        let playerconnection = getVoiceConnection(interaction.guild.id)._state
+          .subscription.player;
+
+        song_queue.songs[0].skipped = true;
+
+        await delay(500);
+        playerconnection.pause();
+      }
+
+      if (input > song_queue.songs.length) {
+        return interaction.editReply({
+          content: "There are not that many songs in the queue men",
+        });
+      }
+      song_queue.songs.splice(input - 1, 1);
       newMessage = `Removing song with number: ${input}`;
     } else {
       try {
-      var b = input.split(',').map(Number);
-      console.log(b)
+        var b = input.split(",").map(Number);
+
+        if (`${b}` == "NaN") {
+          newMessage = "Please specify the number of song in queue";
+        } else {
+          newMessage = `${b}`;
+          b = b.filter(function (val) {
+            return val !== 0;
+          });
+          
+          let loopTimes = 1
+          for (let i = 0; i < b.length; i++) {
+            if (b[i] == 1 && song_queue.songs.length < 2 == undefined) {
+              return interaction.editReply({
+                content: "There is no song to skip men sorri 😔",
+              });
+            } else if (b[i] == 1) {
+              let playerconnection = getVoiceConnection(interaction.guild.id)
+                ._state.subscription.player;
+
+              song_queue.songs[0].skipped = true;
+
+              await delay(500);
+              playerconnection.pause();
+              loopTimes++
+            } else {
+              if (b[i] > song_queue.songs.length) {
+                return interaction.editReply({
+                  content: "There are not that many songs in the queue men",
+                });
+              }
+              song_queue.songs.splice(b[i]-loopTimes, 1);
+              loopTimes++
+            }
+          }
+        }
+
       } catch {
         newMessage = `${input} is not a number men`;
       }

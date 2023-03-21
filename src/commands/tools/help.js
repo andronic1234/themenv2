@@ -51,7 +51,12 @@ module.exports = {
         },
         {
           name: `__/search__`,
-          value: `Searches for a Guild or Player in RealmEye.`,
+          value: `Searches for a Guild or Player on RealmEye.`,
+          inline: false,
+        },
+        {
+          name: `__/set__`,
+          value: `Makes an image with a character's item set from RealmEye`,
           inline: false,
         },
       ]);

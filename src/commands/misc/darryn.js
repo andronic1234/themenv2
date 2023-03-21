@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, channelLink } = require("discord.js");
 
 module.exports = {
-  data: new SlashCommandBuilder().setName("darryn").setDescription("Call Ben"),
+  data: new SlashCommandBuilder().setName("darryn").setDescription("Ask Ben a question."),
   async execute(interaction, client) {
     const answers = ["Yees? 🥰", "Noo 😔", "Ughhhh 😩", "HoHoHo! 🎅"];
     const answer = Math.floor(Math.random() * answers.length);

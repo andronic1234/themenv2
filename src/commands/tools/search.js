@@ -64,17 +64,12 @@ module.exports = {
           newDesc.push(
             `**Player:** __${json.ProfileInfo?.PlayerName}__ \n**Characters:** __${json.ProfileInfo?.Characters}__ \n**Skins:** __${json.ProfileInfo?.Skins}__ \n**Exaltations:** __${json.ProfileInfo?.Exaltations}__ \n**Fame:** __${json.ProfileInfo?.Fame}__ \n**Rank:** __${json.ProfileInfo?.Rank}__ \n**Account Fame:** __${json.ProfileInfo?.AccountFame}__`
           );
-          if (json.CharacterInfo.length == 0) return Chars.push(`No character data`);
+          if (json.CharacterInfo.length == 0)
+            return Chars.push(`No character data`);
           for (let i = 0; i < json.CharacterInfo.length; i++) {
-            Chars.push(`**Character: ${json.CharacterInfo[i].character} 
-                Level: ${json.CharacterInfo[i].level} 
-                Fame: ${json.CharacterInfo[i].fame} 
-                Ranking: ${json.CharacterInfo[i].pos} 
-                Items: \n
-                __1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url})  
-                __2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url})
-                __3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url})  
-                __4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`);
+            Chars.push(
+              `**Character: ${json.CharacterInfo[i].character}\nLevel: ${json.CharacterInfo[i].level} \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${json.CharacterInfo[i].pos} \nItems: \n__1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url}) \n__2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url}) \n__3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url}) \n__4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`
+            );
           }
         } else {
           Name.push(json[0].Guild);
@@ -83,11 +78,7 @@ module.exports = {
 
           for (let i = 0; i < json[0].GuildMemberData.length; i++) {
             if (json[0].GuildMemberData[i].name === "Private") return;
-            Chars.push(`**Member: ${json[0].GuildMemberData[i].name} 
-            Guild Rank: ${json[0].GuildMemberData[i].guild_rank} 
-            Fame: ${json[0].GuildMemberData[i].fame} 
-            Star Rank: ${json[0].GuildMemberData[i].star_rank} 
-            Characters: ${json[0].GuildMemberData[i].characters}**\n\n`);
+            Chars.push(`**Member: ${json[0].GuildMemberData[i].name} \nGuild Rank: ${json[0].GuildMemberData[i].guild_rank} \nFame: ${json[0].GuildMemberData[i].fame} \nStar Rank: ${json[0].GuildMemberData[i].star_rank} \nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`);
           }
         }
       });
