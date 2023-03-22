@@ -152,7 +152,9 @@ module.exports = {
       .setDescription(`${curInstance?.newDesc}`);
     let SecondEmbed = new EmbedBuilder()
       .setTitle(`Data of ${curInstance?.Name}:`)
-      .setDescription(`${curInstance?.Chars.slice(curInstance.Page - 1, curInstance.Page)}`)
+      .setDescription(
+        `${curInstance?.Chars.slice(curInstance.Page - 1, curInstance.Page)}`
+      )
       .setFooter({
         text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
       });
@@ -195,7 +197,9 @@ module.exports = {
 
         if (id === `${main_menu}`) {
           Page = 1;
-          SecondEmbed.setDescription(`${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`);
+          SecondEmbed.setDescription(
+            `${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`
+          );
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
@@ -220,7 +224,9 @@ module.exports = {
           }
         }
         if (id === `${previous}` || id === `${next}`) {
-          SecondEmbed.setDescription(`${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`);
+          SecondEmbed.setDescription(
+            `${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`
+          );
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
@@ -238,9 +244,11 @@ module.exports = {
       }
     });
     searchButtonCollector.on("end", async () => {
-      await interaction.editReply({
-        components: [],
-      });
+      try {
+        await interaction.editReply({
+          components: [],
+        });
+      } catch {}
       Chars = [];
       searchInstances.delete(curInstance);
     });

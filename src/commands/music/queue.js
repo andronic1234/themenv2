@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { getVoiceConnection } = require("@discordjs/voice");
-const { uuid } = require('uuidv4');
+const { uuid } = require("uuidv4");
 const GetQueue = require("./play");
 
 module.exports = {
@@ -61,11 +61,10 @@ module.exports = {
       .setTitle("Interaction timed out")
       .setColor("DarkGrey");
 
-      const queueBtnFirst = uuid()
-      const queueBtnPrevious = uuid()
-      const queueBtnNext = uuid()
-      const queueBtnLast = uuid()
-
+    const queueBtnFirst = uuid();
+    const queueBtnPrevious = uuid();
+    const queueBtnNext = uuid();
+    const queueBtnLast = uuid();
 
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -99,7 +98,7 @@ module.exports = {
     queueButtonCollector.on("collect", async (i) => {
       try {
         let id = i.customId;
-        
+
         if (id === `${queueBtnFirst}`) {
           queuePage = 1;
         } else if (id === `${queueBtnLast}`) {
@@ -132,10 +131,12 @@ module.exports = {
       });
     });
     queueButtonCollector.on("end", async () => {
-      await interaction.editReply({
-        embeds: [QueueEnd],
-        components: [],
-      });
+      try {
+        await interaction.editReply({
+          embeds: [QueueEnd],
+          components: [],
+        });
+      } catch {}
     });
     await interaction.editReply({
       embeds: [QueueEmbed],
