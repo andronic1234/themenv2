@@ -50,7 +50,7 @@ module.exports = {
         });
       }
       song_queue.songs.splice(input - 1, 1);
-      newMessage = `Removing song with number: ${input}`;
+      newMessage = `Removed song with number: ${input}`;
     } else {
       try {
         var b = input.split(",").map(Number);
@@ -58,13 +58,13 @@ module.exports = {
         if (`${b}` == "NaN") {
           newMessage = "Please specify the number of song in queue";
         } else {
-          newMessage = `${b}`;
+          newMessage = `Removed songs ${b} from the queue.`;
           b = b.filter(function (val) {
             return val !== 0;
           });
           
-          let loopTimes = 1
           for (let i = 0; i < b.length; i++) {
+            b.sort((a,b)=>b-a)
             if (b[i] == 1 && song_queue.songs.length < 2 == undefined) {
               return interaction.editReply({
                 content: "There is no song to skip men sorri 😔",
@@ -77,15 +77,13 @@ module.exports = {
 
               await delay(500);
               playerconnection.pause();
-              loopTimes++
             } else {
               if (b[i] > song_queue.songs.length) {
                 return interaction.editReply({
                   content: "There are not that many songs in the queue men",
                 });
               }
-              song_queue.songs.splice(b[i]-loopTimes, 1);
-              loopTimes++
+              song_queue.songs.splice(b[i]-1, 1);
             }
           }
         }

@@ -62,16 +62,36 @@ module.exports = {
         }
       }
     } else {
-      const r = await yts(input);
-      let svideos = r.videos.slice(0, 1);
+      let videoID;
+      let svideos;
+      let r;
+      if (input.includes("watch?v=")) {
+        videoID = input.substr(input.search("v=") + 2, +11);
+      }
+      if (input.includes("youtu.be/")) {
+        videoID = input.substr(input.search("be/") + 3, +11);
+      }
+      if (videoID !== undefined) {
+        r = await yts({ videoId: videoID });
+        song = {
+          title: r.title,
+          url: r.url,
+          time: r.timestamp,
+          chann: r.author.name,
+          thumb: r.thumbnail,
+        };
+      } else {
+        r = await yts(input);
+        svideos = r.videos.slice(0, 1);
+        song = {
+          title: svideos[0].title,
+          url: svideos[0].url,
+          time: svideos[0].timestamp,
+          chann: svideos[0].author.name,
+          thumb: svideos[0].thumbnail,
+        };
+      }
       //Get song info
-      song = {
-        title: svideos[0].title,
-        url: svideos[0].url,
-        time: svideos[0].timestamp,
-        chann: svideos[0].author.name,
-        thumb: svideos[0].thumbnail,
-      };
     }
     //Create queue constructor
     const video_player = async (guild, song) => {

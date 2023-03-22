@@ -62,7 +62,53 @@ module.exports = {
         if (input === "player") {
           Name.push(json.ProfileInfo?.PlayerName);
           newDesc.push(
-            `**Player:** __${json.ProfileInfo?.PlayerName}__ \n**Characters:** __${json.ProfileInfo?.Characters}__ \n**Skins:** __${json.ProfileInfo?.Skins}__ \n**Exaltations:** __${json.ProfileInfo?.Exaltations}__ \n**Fame:** __${json.ProfileInfo?.Fame}__ \n**Rank:** __${json.ProfileInfo?.Rank}__ \n**Account Fame:** __${json.ProfileInfo?.AccountFame}__`
+            `**Player:** __${
+              json.ProfileInfo?.PlayerName
+            }__\n**Characters:** __${
+              typeof json.ProfileInfo.Characters === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Characters
+            }__\n**Skins:** __${
+              typeof json.ProfileInfo.Skins === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Skins
+            }__\n**Exaltations:** __${
+              typeof json.ProfileInfo.Exaltations === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Exaltations
+            }__\n**Fame:** __${
+              typeof json.ProfileInfo.Fame === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Fame
+            }__\n**Rank:** __${
+              typeof json.ProfileInfo.Rank === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Rank
+            }__\n**Account Fame:** __${
+              typeof json.ProfileInfo.AccountFame === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.AccountFame
+            }__\n**Guild:** __${
+              typeof json.ProfileInfo.Guild === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Guild
+            }__\n**Guild Rank:** __${
+              typeof json.ProfileInfo.GuildRank === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.GuildRank
+            }__\n**Created:** __${
+              typeof json.ProfileInfo.Created === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.Created
+            }__\n**First seen:** __${
+              typeof json.ProfileInfo.FirstSeen === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.FirstSeen
+            }__\n**Last seen:** __${
+              typeof json.ProfileInfo.LastSeen === "undefined"
+                ? "hidden"
+                : json.ProfileInfo.LastSeen
+            }__`
           );
           if (json.CharacterInfo.length == 0)
             return Chars.push(`No character data`);
@@ -73,12 +119,15 @@ module.exports = {
           }
         } else {
           Name.push(json[0].Guild);
-          newDesc.push(`**Guild:** ${json[0].Guild} \n**Members:** ${json[0].Members} \n**Characters:** ${json[0].Characters} \n**Fame:** ${json[0].Fame} \n**Most Active on:** ${json[0].MostActiveOn} \n
-                `);
+          newDesc.push(
+            `**Guild:** ${json[0].Guild}\n**Members:** ${json[0].Members}\n**Characters:** ${json[0].Characters}\n**Fame:** ${json[0].Fame}\n**Most Active on:** ${json[0].MostActiveOn}\n`
+          );
 
           for (let i = 0; i < json[0].GuildMemberData.length; i++) {
             if (json[0].GuildMemberData[i].name === "Private") return;
-            Chars.push(`**Member: ${json[0].GuildMemberData[i].name} \nGuild Rank: ${json[0].GuildMemberData[i].guild_rank} \nFame: ${json[0].GuildMemberData[i].fame} \nStar Rank: ${json[0].GuildMemberData[i].star_rank} \nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`);
+            Chars.push(
+              `**Member: ${json[0].GuildMemberData[i].name}\nGuild Rank: ${json[0].GuildMemberData[i].guild_rank}\nFame: ${json[0].GuildMemberData[i].fame}\nStar Rank: ${json[0].GuildMemberData[i].star_rank}\nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`
+            );
           }
         }
       });
