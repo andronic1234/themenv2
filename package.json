@@ -26,6 +26,7 @@
     "libsodium-wrappers": "^0.7.11",
     "mongoose": "^7.0.2",
     "node-fetch": "^2.6.9",
+    "uuidv4": "^6.2.13",
     "yt-search": "^2.10.4",
     "ytdl-core": "^4.11.2"
   },

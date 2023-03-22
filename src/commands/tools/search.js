@@ -6,6 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const fetch = require("node-fetch");
+const { uuid } = require("uuidv4");
 let newDesc = [];
 let Name = [];
 let Chars = [];
@@ -32,6 +33,7 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction, client) {
+    const searchInstances = new Map();
     Chars = [];
     const message = await interaction.deferReply({
       fetchReply: true,
@@ -48,6 +50,7 @@ module.exports = {
       ephemeral: true,
     });
     let error = false;
+    const InstanceID = uuid();
     await fetch(`https://realmeye-api.glitch.me/${input}/${secondInput}`)
       .then(async (res) => await res.json())
       .then((json) => {
@@ -110,12 +113,14 @@ module.exports = {
                 : json.ProfileInfo.LastSeen
             }__`
           );
-          if (json.CharacterInfo.length == 0)
-            return Chars.push(`No character data`);
-          for (let i = 0; i < json.CharacterInfo.length; i++) {
-            Chars.push(
-              `**Character: ${json.CharacterInfo[i].character}\nLevel: ${json.CharacterInfo[i].level} \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${json.CharacterInfo[i].pos} \nItems: \n__1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url}) \n__2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url}) \n__3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url}) \n__4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`
-            );
+          if (json.CharacterInfo.length == 0) {
+            Chars.push(`No character data`);
+          } else {
+            for (let i = 0; i < json.CharacterInfo.length; i++) {
+              Chars.push(
+                `**Character: ${json.CharacterInfo[i].character}\nLevel: ${json.CharacterInfo[i].level} \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${json.CharacterInfo[i].pos} \nItems: \n__1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url}) \n__2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url}) \n__3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url}) \n__4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`
+              );
+            }
           }
         } else {
           Name.push(json[0].Guild);
@@ -130,37 +135,50 @@ module.exports = {
             );
           }
         }
+        const searchResults = {
+          Name: Name,
+          newDesc: newDesc,
+          Chars: Chars,
+          Page: Page,
+        };
+
+        searchInstances.set(InstanceID, searchResults);
       });
     if (error == true) return;
+    const curInstance = searchInstances.get(InstanceID);
+
     let ResultsEmbed = new EmbedBuilder()
       .setTitle(`Data Found:`)
-      .setDescription(`${newDesc}`);
+      .setDescription(`${curInstance?.newDesc}`);
     let SecondEmbed = new EmbedBuilder()
-      .setTitle(`Data of ${Name}:`)
-      .setDescription(`${Chars.slice(Page - 1, Page)}`)
+      .setTitle(`Data of ${curInstance?.Name}:`)
+      .setDescription(`${curInstance?.Chars.slice(curInstance.Page - 1, curInstance.Page)}`)
       .setFooter({
-        text: `Page ${Page} out of ${Chars.length}`,
+        text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
       });
-
+    const main_menu = uuid();
+    const previous = uuid();
+    const next = uuid();
+    const second_menu = uuid();
     const SearchbtnPrimary = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId("main-menu")
+        .setCustomId(`${main_menu}`)
         .setEmoji(`<:realmeye:1056306647041069066>`)
         .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
-        .setCustomId("previous")
+        .setCustomId(`${previous}`)
         .setEmoji(`<:IMG_20220310_180047:951517086159613992>`)
         .setStyle(ButtonStyle.Success),
 
       new ButtonBuilder()
-        .setCustomId("next")
+        .setCustomId(`${next}`)
         .setEmoji("<:IMG_20220310_180053:951517086159626240>")
         .setStyle(ButtonStyle.Success)
     );
     const SearchbtnSecondary = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId("secondary-menu")
+        .setCustomId(`${second_menu}`)
         .setEmoji(`<:Knight:1056305882750799953>`)
         .setStyle(ButtonStyle.Primary)
     );
@@ -169,42 +187,42 @@ module.exports = {
     const searchButtonCollector =
       interaction.channel.createMessageComponentCollector({
         filter,
-        time: 60000,
+        time: 180000,
       });
     searchButtonCollector.on("collect", async (i) => {
       try {
         let id = i.customId;
 
-        if (id === "main-menu") {
+        if (id === `${main_menu}`) {
           Page = 1;
-          SecondEmbed.setDescription(`${Chars.slice(Page - 1, Page)}`);
+          SecondEmbed.setDescription(`${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`);
           SecondEmbed.setFooter({
-            text: `Page ${Page} out of ${Chars.length}`,
+            text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
           await interaction.editReply({
             embeds: [ResultsEmbed],
             components: [SearchbtnSecondary],
             ephemeral: true,
           });
-        } else if (id === "secondary-menu") {
+        } else if (id === `${second_menu}`) {
           await interaction.editReply({
             embeds: [SecondEmbed],
             components: [SearchbtnPrimary],
             ephemeral: true,
           });
-        } else if (id === "next") {
-          if (Page < Math.ceil(Chars.length)) {
-            Page++;
+        } else if (id === `${next}`) {
+          if (curInstance.Page < Math.ceil(curInstance.Chars.length)) {
+            curInstance.Page++;
           }
-        } else if (id === "previous") {
-          if (Page > 1) {
-            Page--;
+        } else if (id === `${previous}`) {
+          if (curInstance.Page > 1) {
+            curInstance.Page--;
           }
         }
-        if (id === "previous" || id === "next") {
-          SecondEmbed.setDescription(`${Chars.slice(Page - 1, Page)}`);
+        if (id === `${previous}` || id === `${next}`) {
+          SecondEmbed.setDescription(`${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`);
           SecondEmbed.setFooter({
-            text: `Page ${Page} out of ${Chars.length}`,
+            text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
           await interaction.editReply({
             embeds: [SecondEmbed],
@@ -220,11 +238,11 @@ module.exports = {
       }
     });
     searchButtonCollector.on("end", async () => {
-      Page = 1;
       await interaction.editReply({
         components: [],
       });
       Chars = [];
+      searchInstances.delete(curInstance);
     });
     await interaction.editReply({
       embeds: [ResultsEmbed],

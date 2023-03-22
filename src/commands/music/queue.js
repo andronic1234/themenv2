@@ -6,6 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { getVoiceConnection } = require("@discordjs/voice");
+const { uuid } = require('uuidv4');
 const GetQueue = require("./play");
 
 module.exports = {
@@ -60,24 +61,30 @@ module.exports = {
       .setTitle("Interaction timed out")
       .setColor("DarkGrey");
 
+      const queueBtnFirst = uuid()
+      const queueBtnPrevious = uuid()
+      const queueBtnNext = uuid()
+      const queueBtnLast = uuid()
+
+
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId("queue-btn-first")
+        .setCustomId(`${queueBtnFirst}`)
         .setEmoji("<:647553ccfcb3406e8e0d4814ab9bd01d:951511553222520872>")
         .setStyle(ButtonStyle.Success),
 
       new ButtonBuilder()
-        .setCustomId("queue-btn-previous")
+        .setCustomId(`${queueBtnPrevious}`)
         .setEmoji(`<:IMG_20220310_180047:951517086159613992>`)
         .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
-        .setCustomId("queue-btn-next")
+        .setCustomId(`${queueBtnNext}`)
         .setEmoji("<:IMG_20220310_180053:951517086159626240>")
         .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
-        .setCustomId("queue-btn-last")
+        .setCustomId(`${queueBtnLast}`)
         .setEmoji("<:647553ccfcb3406e8e0d4814ab9bd01d:951511564098359336>")
         .setStyle(ButtonStyle.Success)
     );
@@ -87,23 +94,23 @@ module.exports = {
     const filter = (i) => i.user.id === interaction.user.id;
 
     const queueButtonCollector =
-      message.channel.createMessageComponentCollector({ filter, time: 60000 });
+      message.channel.createMessageComponentCollector({ filter, time: 180000 });
     //Switch pages
     queueButtonCollector.on("collect", async (i) => {
       try {
         let id = i.customId;
-
-        if (id === "queue-btn-first") {
+        
+        if (id === `${queueBtnFirst}`) {
           queuePage = 1;
-        } else if (id === "queue-btn-last") {
+        } else if (id === `${queueBtnLast}`) {
           queuePage = Math.ceil(newDesc.length / 10);
-        } else if (id === "queue-btn-next") {
+        } else if (id === `${queueBtnNext}`) {
           if (queuePage < Math.ceil(newDesc.length / 10)) {
             queuePage++;
           } else {
             await i.deferUpdate();
           }
-        } else if (id === "queue-btn-previous") {
+        } else if (id === `${queueBtnPrevious}`) {
           if (queuePage > 1) {
             queuePage--;
           }

@@ -5,12 +5,15 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
+const { uuid } = require('uuidv4');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Shows the bot's Help Menu."),
   async execute(interaction, client) {
+    const MainBtn = uuid()
+    const MusicBtn = uuid()
     const Helpembed = new EmbedBuilder()
       .setTitle(`**Help Menu**`)
       .setColor("DarkGreen")
@@ -136,28 +139,28 @@ module.exports = {
 
     const Helpbtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId("help-menu")
+        .setCustomId(`${MainBtn}`)
         .setEmoji("🛠️")
         .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
-        .setCustomId("music-menu")
+        .setCustomId(`${MusicBtn}`)
         .setEmoji(`🎶`)
         .setStyle(ButtonStyle.Primary)
     );
     const helpButtonCollector =
-      interaction.channel.createMessageComponentCollector({ time: 60000 });
+      interaction.channel.createMessageComponentCollector({ time: 180000 });
     helpButtonCollector.on("collect", async (i) => {
       try {
         let id = i.customId;
 
-        if (id === "help-menu") {
+        if (id === `${MainBtn}`) {
           await interaction.editReply({
             embeds: [Helpembed],
             components: [Helpbtns],
             ephemeral: true,
           });
-        } else if (id === "music-menu") {
+        } else if (id === `${MusicBtn}`) {
           await interaction.editReply({
             embeds: [Musicembed],
             components: [Helpbtns],
