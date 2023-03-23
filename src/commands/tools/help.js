@@ -5,15 +5,15 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { uuid } = require('uuidv4');
+const { uuid } = require("uuidv4");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Shows the bot's Help Menu."),
   async execute(interaction, client) {
-    const MainBtn = uuid()
-    const MusicBtn = uuid()
+    const MainBtn = uuid();
+    const MusicBtn = uuid();
     const Helpembed = new EmbedBuilder()
       .setTitle(`**Help Menu**`)
       .setColor("DarkGreen")
@@ -175,10 +175,12 @@ module.exports = {
       }
     });
     helpButtonCollector.on("end", async () => {
-      await interaction.editReply({
-        embeds: [HelpEnd],
-        components: [],
-      });
+      try {
+        await interaction.editReply({
+          embeds: [HelpEnd],
+          components: [],
+        });
+      } catch {}
     });
 
     await interaction.reply({

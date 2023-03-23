@@ -62,9 +62,9 @@ module.exports = {
           b = b.filter(function (val) {
             return val !== 0;
           });
-          
+
           for (let i = 0; i < b.length; i++) {
-            b.sort((a,b)=>b-a)
+            b.sort((a, b) => b - a);
             if (b[i] == 1 && song_queue.songs.length < 2 == undefined) {
               return interaction.editReply({
                 content: "There is no song to skip men sorri 😔",
@@ -83,11 +83,10 @@ module.exports = {
                   content: "There are not that many songs in the queue men",
                 });
               }
-              song_queue.songs.splice(b[i]-1, 1);
+              song_queue.songs.splice(b[i] - 1, 1);
             }
           }
         }
-
       } catch {
         newMessage = `${input} is not a number men`;
       }
