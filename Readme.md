@@ -4,16 +4,18 @@
 
 <br>
 
-#### It mainly plays music and counts the amount of times members on your server have said the word **men**
+#### It mainly plays music and counts the amount of times members on the server have said the word **men**
 
 ---
 
-### To sum it up:
+### What it can do:
 
 - It can play music on multiple servers at
   a time
 
 - It has a _men_ counter
+
+- It displays RealmEye profile and guild information and character sets.
 
 - It's real (real)
   <br><br>
@@ -47,3 +49,9 @@
 - [yt-search](https://www.npmjs.com/package/yt-search)
 
 - [ytdl-core](https://www.npmjs.com/package/ytdl-core)
+
+- [node-fetch](https://www.npmjs.com/package/node-fetch)
+
+- [canvas](https://www.npmjs.com/package/canvas)
+
+- [uuidv4](https://www.npmjs.com/package/uuidv4)
