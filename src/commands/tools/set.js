@@ -21,6 +21,14 @@ module.exports = {
         .setName("character")
         .setDescription("Specify a character.")
         .setRequired(true)
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName("show-skin")
+        .setDescription(
+          "Specify whether to display the character skin or not. True by default."
+        )
+        .setRequired(false)
     ),
   async execute(interaction, client) {
     const message = await interaction.deferReply({
@@ -28,8 +36,10 @@ module.exports = {
     });
     let player = interaction.options._hoistedOptions[0].value;
     let character = interaction.options._hoistedOptions[1].value;
+    let showSkin = interaction.options._hoistedOptions[2]?.value;
     player = player.charAt(0).toUpperCase() + player.slice(1);
-    character = character.charAt(0).toUpperCase() + character.slice(1);
+    character =
+      character.toLowerCase().charAt(0).toUpperCase() + character.slice(1);
     try {
       await fetch(
         `https://realmeye-api.glitch.me/player/${player}/${character}/weapon`
@@ -46,20 +56,30 @@ module.exports = {
         .setTitle("Set Found.")
         .setDescription("**__Creating image__...**");
       interaction.editReply({ embeds: [ImgFound] });
-      const width = 184;
+      let width = 184;
       const height = 46;
+
+      const item = ["weapon", "ability", "armor", "ring"];
+      if (typeof showSkin === "undefined" || showSkin == true) {
+        item.unshift("");
+        width = 257;
+      }
 
       const canvas = createCanvas(width, height);
       const context = canvas.getContext("2d");
 
       context.fillStyle = "#00000000";
       context.fillRect(0, 0, width, height);
-      const item = ["weapon", "ability", "armor", "ring"];
+
+      let firstImgPos = 0;
       for (let i = 0; i < item.length; i++) {
         await loadImage(
           `https://realmeye-api.glitch.me/player/${player}/${character}/${item[i]}`
         ).then((image) => {
-          context.drawImage(image, 0 + i * 46, 0, 46, 46);
+          context.drawImage(image, firstImgPos + i * 46, 0, 50, 50);
+          if (showSkin !== false) {
+            firstImgPos = 23;
+          }
           if (i + 1 == item.length) {
             const buffer = canvas.toBuffer("image/png");
             const attachment = new AttachmentBuilder(buffer, {
