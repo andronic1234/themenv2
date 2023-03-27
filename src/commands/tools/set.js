@@ -57,7 +57,7 @@ module.exports = {
         .setDescription("**__Creating image__...**");
       interaction.editReply({ embeds: [ImgFound] });
       let width = 184;
-      const height = 46;
+      const height = 50;
 
       const item = ["weapon", "ability", "armor", "ring"];
       if (typeof showSkin === "undefined" || showSkin == true) {
@@ -76,7 +76,7 @@ module.exports = {
         await loadImage(
           `https://realmeye-api.glitch.me/player/${player}/${character}/${item[i]}`
         ).then((image) => {
-          context.drawImage(image, firstImgPos + i * 46, 0, 50, 50);
+          context.drawImage(image, firstImgPos + i * 46, 0);
           if (showSkin !== false) {
             firstImgPos = 23;
           }
