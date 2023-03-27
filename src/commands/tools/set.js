@@ -86,7 +86,7 @@ module.exports = {
               name: "ItemSet.png",
             });
             const SetEmbed = new EmbedBuilder()
-              .setTitle(`Set of ${player}'s ${character}`)
+              .setTitle(`Set of ${player}'s ${character}:`)
               .setImage("attachment://ItemSet.png")
               .setColor("Blurple");
             interaction.editReply({
