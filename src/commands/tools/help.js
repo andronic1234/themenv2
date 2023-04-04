@@ -5,15 +5,15 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { uuid } = require("uuidv4");
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Shows the bot's Help Menu."),
   async execute(interaction, client) {
-    const MainBtn = uuid();
-    const MusicBtn = uuid();
+    const MainBtn = uuidv4();
+    const MusicBtn = uuidv4();
     const Helpembed = new EmbedBuilder()
       .setTitle(`**Help Menu**`)
       .setColor("DarkGreen")

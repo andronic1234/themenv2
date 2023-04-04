@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { getVoiceConnection } = require("@discordjs/voice");
-const { uuid } = require("uuidv4");
+const { v4: uuidv4 } = require('uuid');
 const GetQueue = require("./play");
 
 module.exports = {
@@ -61,10 +61,10 @@ module.exports = {
       .setTitle("Interaction timed out")
       .setColor("DarkGrey");
 
-    const queueBtnFirst = uuid();
-    const queueBtnPrevious = uuid();
-    const queueBtnNext = uuid();
-    const queueBtnLast = uuid();
+    const queueBtnFirst = uuidv4();
+    const queueBtnPrevious = uuidv4();
+    const queueBtnNext = uuidv4();
+    const queueBtnLast = uuidv4();
 
     const Queuebtns = new ActionRowBuilder().addComponents(
       new ButtonBuilder()

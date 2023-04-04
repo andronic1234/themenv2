@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const fetch = require("node-fetch");
-const { uuid } = require("uuidv4");
+const { v4: uuidv4 } = require('uuid');
 let newDesc = [];
 let Name = [];
 let Chars = [];
@@ -50,7 +50,7 @@ module.exports = {
       ephemeral: true,
     });
     let error = false;
-    const InstanceID = uuid();
+    const InstanceID = uuidv4();
     if (input === "guild") {
       secondInput = secondInput.replace(/ /g, "%20");
     }
@@ -162,10 +162,10 @@ module.exports = {
       .setFooter({
         text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
       });
-    const main_menu = uuid();
-    const previous = uuid();
-    const next = uuid();
-    const second_menu = uuid();
+    const main_menu = uuidv4();
+    const previous = uuidv4();
+    const next = uuidv4();
+    const second_menu = uuidv4();
     const SearchbtnPrimary = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId(`${main_menu}`)
