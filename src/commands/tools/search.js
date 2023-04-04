@@ -51,6 +51,9 @@ module.exports = {
     });
     let error = false;
     const InstanceID = uuid();
+    if (input === "guild") {
+      secondInput = secondInput.replace(/ /g, "%20");
+    }
     await fetch(`https://realmeye-api.glitch.me/${input}/${secondInput}`)
       .then(async (res) => await res.json())
       .then((json) => {
@@ -129,10 +132,11 @@ module.exports = {
           );
 
           for (let i = 0; i < json[0].GuildMemberData.length; i++) {
-            if (json[0].GuildMemberData[i].name === "Private") return;
-            Chars.push(
-              `**Member: ${json[0].GuildMemberData[i].name}\nGuild Rank: ${json[0].GuildMemberData[i].guild_rank}\nFame: ${json[0].GuildMemberData[i].fame}\nStar Rank: ${json[0].GuildMemberData[i].star_rank}\nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`
-            );
+            if (json[0].GuildMemberData[i].name !== "Private") {
+              Chars.push(
+                `**Member: ${json[0].GuildMemberData[i].name}\nGuild Rank: ${json[0].GuildMemberData[i].guild_rank}\nFame: ${json[0].GuildMemberData[i].fame}\nStar Rank: ${json[0].GuildMemberData[i].star_rank}\nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`
+              );
+            }
           }
         }
         const searchResults = {
