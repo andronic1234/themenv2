@@ -18,7 +18,7 @@
   "homepage": "https://github.com/andronic1234/themen#readme",
   "dependencies": {
     "@discordjs/rest": "^1.6.0",
-    "@discordjs/voice": "^0.15.0",
+    "@discordjs/voice": "^0.16.0",
     "canvas": "^2.11.0",
     "discord-api-types": "^0.37.36",
     "discord.js": "^14.8.0",
@@ -28,7 +28,7 @@
     "node-fetch": "^2.6.9",
     "uuid": "^9.0.0",
     "yt-search": "^2.10.4",
-    "ytdl-core": "^4.11.3"
+    "ytdl-core": "^4.10.0"
   },
   "devDependencies": {
     "dotenv": "^16.0.3"
