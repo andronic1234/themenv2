@@ -5,7 +5,7 @@ const {
   createAudioResource,
   getVoiceConnection,
   AudioPlayerStatus,
-  VoiceConnectionStatus
+  VoiceConnectionStatus,
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
@@ -100,20 +100,31 @@ module.exports = {
 
       var song_queue = queue.get(guild.id);
       try {
+        let stream;
         //Gets yt stream and plays it
-        var stream = ytdl(song.url, {
-          filter: "audioonly",
-          quality: "highestaudio",
-          highWaterMark: 1 << 25,
-        });
-
+        //If video is livestream
+        if (song.time === "0:00") {
+          song.time = "Livestream";
+          stream = ytdl(song.url, {
+            liveBuffer: 4900,
+            quality: [128, 127, 120, 96, 95, 94, 93],
+            highWaterMark: 1 << 25,
+          });
+        } else {
+          //If video is not livestream
+          stream = ytdl(song.url, {
+            filter: "audioonly",
+            quality: "highestaudio",
+            highWaterMark: 1 << 25,
+          });
+        }
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
         player.play(resource, { highWaterMark: 1 });
         song_queue.connection.subscribe(player);
         song_queue.connection.on(VoiceConnectionStatus.Disconnected, () => {
           return queue.delete(interaction.guild.id);
-        })
+        });
       } catch {}
 
       //Skipping event
@@ -273,6 +284,5 @@ module.exports = {
 
       message.channel.send(`🎶**${song.title}** added to the queue.`);
     }
-
   },
 };

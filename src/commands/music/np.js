@@ -17,7 +17,8 @@ module.exports = {
     if (
       !song_queue ||
       !song_queue.songs ||
-      getVoiceConnection(interaction.guild.id) == undefined
+      getVoiceConnection(interaction.guild.id) == undefined ||
+      song_queue?.songs[0]?.thumb == undefined
     )
       return interaction.editReply({
         content: noQueue,
