@@ -5,6 +5,7 @@ const {
   createAudioResource,
   getVoiceConnection,
   AudioPlayerStatus,
+  VoiceConnectionStatus
 } = require("@discordjs/voice");
 const yts = require("yt-search");
 const ytdl = require("ytdl-core");
@@ -109,8 +110,11 @@ module.exports = {
         var player = createAudioPlayer();
         const resource = createAudioResource(stream);
         player.play(resource, { highWaterMark: 1 });
+        song_queue.connection.subscribe(player);
+        song_queue.connection.on(VoiceConnectionStatus.Disconnected, () => {
+          return queue.delete(interaction.guild.id);
+        })
       } catch {}
-      song_queue.connection.subscribe(player);
 
       //Skipping event
       let search = Options.findIndex(
@@ -213,6 +217,7 @@ module.exports = {
           }
         }
       });
+
       //Now Playing embed
       let NowPlaying = new EmbedBuilder()
         .setTitle("🎶 **Now Playing** 🎶")
@@ -268,5 +273,6 @@ module.exports = {
 
       message.channel.send(`🎶**${song.title}** added to the queue.`);
     }
+
   },
 };
