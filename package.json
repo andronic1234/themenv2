@@ -28,7 +28,7 @@
     "node-fetch": "^2.6.9",
     "uuid": "^9.0.0",
     "yt-search": "^2.10.4",
-    "ytdl-core": "^4.10.0"
+    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.3-patch.1"
   },
   "devDependencies": {
     "dotenv": "^16.0.3"

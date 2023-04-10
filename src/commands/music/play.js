@@ -107,7 +107,7 @@ module.exports = {
           song.time = "Livestream";
           stream = ytdl(song.url, {
             liveBuffer: 4900,
-            quality: [128, 127, 120, 96, 95, 94, 93],
+            quality: [91, 92, 93, 94, 95],
             highWaterMark: 1 << 25,
           });
         } else {
