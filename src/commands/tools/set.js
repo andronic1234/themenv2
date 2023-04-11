@@ -37,7 +37,6 @@ module.exports = {
     let player = interaction.options._hoistedOptions[0].value;
     let character = interaction.options._hoistedOptions[1].value;
     let showSkin = interaction.options._hoistedOptions[2]?.value;
-    player = player.charAt(0).toUpperCase() + player.slice(1);
     character =
       character.toLowerCase().charAt(0).toUpperCase() + character.slice(1);
     try {
