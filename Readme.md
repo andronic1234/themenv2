@@ -22,7 +22,7 @@
 
 ## Required keys:
 
-1. [MongoDB](https://www.mongodb.com/) ((DB_TOKEN in your .env file)
+1. [MongoDB](https://www.mongodb.com/) (DB_TOKEN in your .env file)
 
 2. [Discord](https://discord.com/developers) (BOT_TOKEN in your .env file)
 
