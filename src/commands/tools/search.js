@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const fetch = require("node-fetch");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 let newDesc = [];
 let Name = [];
 let Chars = [];
@@ -126,15 +126,15 @@ module.exports = {
             }
           }
         } else {
-          Name.push(json[0].Guild);
+          Name.push(json?.Guild);
           newDesc.push(
-            `**Guild:** ${json[0].Guild}\n**Members:** ${json[0].Members}\n**Characters:** ${json[0].Characters}\n**Fame:** ${json[0].Fame}\n**Most Active on:** ${json[0].MostActiveOn}\n`
+            `**Guild:** ${json.Guild}\n**Members:** ${json.Members}\n**Characters:** ${json.Characters}\n**Fame:** ${json.Fame}\n**Most Active on:** ${json.MostActiveOn}\n`
           );
 
-          for (let i = 0; i < json[0].GuildMemberData.length; i++) {
-            if (json[0].GuildMemberData[i].name !== "Private") {
+          for (let i = 0; i < json.GuildMemberData.length; i++) {
+            if (json.GuildMemberData[i].name !== "Private") {
               Chars.push(
-                `**Member: ${json[0].GuildMemberData[i].name}\nGuild Rank: ${json[0].GuildMemberData[i].guild_rank}\nFame: ${json[0].GuildMemberData[i].fame}\nStar Rank: ${json[0].GuildMemberData[i].star_rank}\nCharacters: ${json[0].GuildMemberData[i].characters}**\n\n`
+                `**Member: ${json.GuildMemberData[i].name}\nGuild Rank: ${json.GuildMemberData[i].guild_rank}\nFame: ${json.GuildMemberData[i].fame}\nStar Rank: ${json.GuildMemberData[i].star_rank}\nCharacters: ${json.GuildMemberData[i].characters}**\n\n`
               );
             }
           }
