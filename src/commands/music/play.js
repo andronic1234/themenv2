@@ -118,14 +118,23 @@ module.exports = {
             highWaterMark: 1 << 25,
           });
         }
-        var player = createAudioPlayer();
-        const resource = createAudioResource(stream);
+        var player = await createAudioPlayer();
+        const resource = await createAudioResource(stream);
         player.play(resource, { highWaterMark: 1 });
         song_queue.connection.subscribe(player);
+        stream.on("error", (err) => {
+          song_queue.text_channel.send(
+            "There was an error with the song stream. Playing next song..."
+          );
+          song_queue.songs.shift();
+          return video_player(guild, song_queue.songs[0]);
+        });
         song_queue.connection.on(VoiceConnectionStatus.Disconnected, () => {
           return queue.delete(interaction.guild.id);
         });
-      } catch {}
+      } catch (err) {
+        console.log(err);
+      }
 
       //Skipping event
       let search = Options.findIndex(
