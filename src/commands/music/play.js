@@ -41,13 +41,12 @@ module.exports = {
     const server_queue = queue.get(interaction.guild.id);
 
     //Searches string with ytsearch
-    let Guild_ID = { id: interaction.guild.id };
     let song;
     if (input.includes("playlist?list=")) {
       let listID = input.substr(input.search("list=") + 5, 34);
       const list = await yts({ listId: listID });
       var listarr = new Array();
-      for (let i = 0; i < Math.min(list.videos.length, 100); i++) {
+      for (let i = 0; i < list.videos.length; i++) {
         song = {
           title: list.videos[i].title,
           url: "https://www.youtube.com/watch?v=" + list.videos[i].videoId,
