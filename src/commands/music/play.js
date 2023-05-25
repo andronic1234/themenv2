@@ -102,16 +102,16 @@ module.exports = {
         let stream;
         //Gets yt stream and plays it
         //If video is livestream
-        if (song.time === "0:00") {
-          song.time = "Livestream";
-          stream = ytdl(song.url, {
+        if (song?.time === "0:00") {
+          song?.time = "Livestream";
+          stream = ytdl(song?.url, {
             liveBuffer: 4900,
             quality: [91, 92, 93, 94, 95],
             highWaterMark: 1 << 25,
           });
         } else {
           //If video is not livestream
-          stream = ytdl(song.url, {
+          stream = ytdl(song?.url, {
             filter: "audioonly",
             quality: "highestaudio",
             highWaterMark: 1 << 25,
