@@ -30,6 +30,19 @@ module.exports = {
     });
     message.delete(200);
 
+    let search = Options.findIndex(
+      (ID) => ID.guildID == `${interaction.guild.id}`
+    );
+
+    if (Options[search] == undefined) {
+      Options.push({
+        guildID: interaction.guild.id,
+        shuffle: false,
+        loop: false,
+      });
+      search = Options.length - 1;
+    }
+
     // Box Input, basically the args
     let input = interaction.options._hoistedOptions[0].value;
     let voiceChannel = interaction.member.voice.channel;
@@ -103,7 +116,7 @@ module.exports = {
         //Gets yt stream and plays it
         //If video is livestream
         if (song?.time === "0:00") {
-          song?.time = "Livestream";
+          song.time = "Livestream";
           stream = ytdl(song?.url, {
             liveBuffer: 4900,
             quality: [91, 92, 93, 94, 95],
@@ -136,19 +149,9 @@ module.exports = {
       }
 
       //Skipping event
-      let search = Options.findIndex(
-        (ID) => ID.guildID == `${interaction.guild.id}`
-      );
+
       player.on(AudioPlayerStatus.Paused, () => {
         if (song_queue.songs[0].skipped == true) {
-          if (Options[search] == undefined) {
-            Options.push({
-              guildID: interaction.guild.id,
-              shuffle: false,
-              loop: false,
-            });
-            search = Options.length - 1;
-          }
           //Shuffle & Loop on
           if (Options[search].loop == true && Options[search].shuffle == true) {
             song_queue.songs.push(song_queue.songs.shift());
@@ -187,14 +190,6 @@ module.exports = {
       });
       player.on(AudioPlayerStatus.Idle, async () => {
         await delay(500);
-        if (Options[search] == undefined) {
-          Options.push({
-            guildID: interaction.guild.id,
-            shuffle: false,
-            loop: false,
-          });
-          search = Options.length - 1;
-        }
 
         //Shuffle & Loop on
         if (Options[search].loop == true && Options[search].shuffle == true) {
@@ -276,6 +271,8 @@ module.exports = {
           adapterCreator: interaction.guild.voiceAdapterCreator,
         });
         queue_constructor.connection = connection;
+        if (Options[search].shuffle == true)
+          queue_constructor.songs.sort((a, b) => 0.5 - Math.random());
         video_player(interaction.guild, queue_constructor.songs[0]);
       } catch (err) {
         queue.delete(interaction.guild.id);
