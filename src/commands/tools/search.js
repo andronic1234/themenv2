@@ -120,8 +120,37 @@ module.exports = {
             Chars.push(`No character data`);
           } else {
             for (let i = 0; i < json.CharacterInfo.length; i++) {
+              const itemName = json.CharacterInfo[i].items;
               Chars.push(
-                `**Character: ${json.CharacterInfo[i].character}\nLevel: ${json.CharacterInfo[i].level} \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${json.CharacterInfo[i].pos} \nItems: \n__1__. [${json.CharacterInfo[i].items[0].title}](${json.CharacterInfo[i].items[0].url}) \n__2__. [${json.CharacterInfo[i].items[1].title}](${json.CharacterInfo[i].items[1].url}) \n__3__. [${json.CharacterInfo[i].items[2].title}](${json.CharacterInfo[i].items[2].url}) \n__4__. [${json.CharacterInfo[i].items[3].title}](${json.CharacterInfo[i].items[3].url})**\n\n`
+                `**Character: ${json.CharacterInfo[i].character}\nLevel: ${
+                  json.CharacterInfo[i].level
+                } \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${
+                  json.CharacterInfo[i].pos
+                } \nItems: \n__1__. ${
+                  itemName[0].title === "No Item"
+                    ? "No Item"
+                    : `[${itemName[0].title}]`
+                }${
+                  itemName[0].title === "No Item" ? "" : `(${itemName[0].url})`
+                } \n__2__.  ${
+                  itemName[1].title === "No Item"
+                    ? "No Item"
+                    : `[${itemName[1].title}]`
+                }${
+                  itemName[1].title === "No Item" ? "" : `(${itemName[1].url})`
+                } \n__3__. ${
+                  itemName[2].title === "No Item"
+                    ? "No Item"
+                    : `[${itemName[2].title}]`
+                }${
+                  itemName[2].title === "No Item" ? "" : `(${itemName[2].url})`
+                } \n__4__. ${
+                  itemName[3].title === "No Item"
+                    ? "No Item"
+                    : `[${itemName[3].title}]`
+                }${
+                  itemName[3].title === "No Item" ? "" : `(${itemName[3].url})`
+                }**\n\n`
               );
             }
           }
