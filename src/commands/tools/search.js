@@ -126,25 +126,25 @@ module.exports = {
                   json.CharacterInfo[i].level
                 } \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${
                   json.CharacterInfo[i].pos
-                } \nItems: \n__1__. ${
+                } \nItems: \n- __1__. ${
                   itemName[0].title === "No Item"
                     ? "No Item"
                     : `[${itemName[0].title}]`
                 }${
                   itemName[0].title === "No Item" ? "" : `(${itemName[0].url})`
-                } \n__2__.  ${
+                } \n- __2__.  ${
                   itemName[1].title === "No Item"
                     ? "No Item"
                     : `[${itemName[1].title}]`
                 }${
                   itemName[1].title === "No Item" ? "" : `(${itemName[1].url})`
-                } \n__3__. ${
+                } \n- __3__. ${
                   itemName[2].title === "No Item"
                     ? "No Item"
                     : `[${itemName[2].title}]`
                 }${
                   itemName[2].title === "No Item" ? "" : `(${itemName[2].url})`
-                } \n__4__. ${
+                } \n- __4__. ${
                   itemName[3].title === "No Item"
                     ? "No Item"
                     : `[${itemName[3].title}]`
