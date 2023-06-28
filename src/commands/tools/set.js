@@ -58,7 +58,7 @@ module.exports = {
       let width = 184;
       const height = 50;
 
-      const item = ["weapon", "ability", "armor", "ring"];
+      const item = ["set"];
       if (typeof showSkin === "undefined" || showSkin == true) {
         item.unshift("");
         width = 257;
