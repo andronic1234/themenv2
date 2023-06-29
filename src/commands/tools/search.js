@@ -10,6 +10,8 @@ const { v4: uuidv4 } = require("uuid");
 let newDesc = [];
 let Name = [];
 let Chars = [];
+let CharsSets = [];
+
 let Page = 1;
 
 module.exports = {
@@ -34,7 +36,6 @@ module.exports = {
     ),
   async execute(interaction, client) {
     const searchInstances = new Map();
-    Chars = [];
     const message = await interaction.deferReply({
       fetchReply: true,
     });
@@ -120,31 +121,32 @@ module.exports = {
             Chars.push(`No character data`);
           } else {
             for (let i = 0; i < json.CharacterInfo.length; i++) {
+              CharsSets.push(json.CharacterInfo[i].character);
               const itemName = json.CharacterInfo[i].items;
               Chars.push(
                 `**Character: ${json.CharacterInfo[i].character}\nLevel: ${
                   json.CharacterInfo[i].level
                 } \nFame: ${json.CharacterInfo[i].fame} \nRanking: ${
                   json.CharacterInfo[i].pos
-                } \nItems: \n- __1__. ${
+                } \nItems: \n\n__1__. ${
                   itemName[0].title === "No Item"
                     ? "No Item"
                     : `[${itemName[0].title}]`
                 }${
                   itemName[0].title === "No Item" ? "" : `(${itemName[0].url})`
-                } \n- __2__.  ${
+                } \n__2__.  ${
                   itemName[1].title === "No Item"
                     ? "No Item"
                     : `[${itemName[1].title}]`
                 }${
                   itemName[1].title === "No Item" ? "" : `(${itemName[1].url})`
-                } \n- __3__. ${
+                } \n__3__. ${
                   itemName[2].title === "No Item"
                     ? "No Item"
                     : `[${itemName[2].title}]`
                 }${
                   itemName[2].title === "No Item" ? "" : `(${itemName[2].url})`
-                } \n- __4__. ${
+                } \n__4__. ${
                   itemName[3].title === "No Item"
                     ? "No Item"
                     : `[${itemName[3].title}]`
@@ -173,6 +175,8 @@ module.exports = {
           newDesc: newDesc,
           Chars: Chars,
           Page: Page,
+          CharsSets: CharsSets,
+          ImgUrl: "",
         };
 
         searchInstances.set(InstanceID, searchResults);
@@ -188,6 +192,7 @@ module.exports = {
       .setDescription(
         `${curInstance?.Chars.slice(curInstance.Page - 1, curInstance.Page)}`
       )
+      .setImage("attachment://ItemSet.png")
       .setFooter({
         text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
       });
@@ -225,35 +230,49 @@ module.exports = {
         time: 180000,
       });
     searchButtonCollector.on("collect", async (i) => {
+      curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
+        curInstance?.Name
+      }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
       try {
         let id = i.customId;
 
         if (id === `${main_menu}`) {
-          Page = 1;
+          curInstance.Page = 1;
           SecondEmbed.setDescription(
             `${curInstance.Chars.slice(curInstance.Page - 1, curInstance.Page)}`
           );
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
+          SecondEmbed.setImage("attachment://ItemSet.png");
           await interaction.editReply({
             embeds: [ResultsEmbed],
             components: [SearchbtnSecondary],
+            files: [],
             ephemeral: true,
           });
         } else if (id === `${second_menu}`) {
           await interaction.editReply({
             embeds: [SecondEmbed],
             components: [SearchbtnPrimary],
+            files: [{ attachment: curInstance.ImgUrl, name: "ItemSet.png" }],
             ephemeral: true,
           });
         } else if (id === `${next}`) {
           if (curInstance.Page < Math.ceil(curInstance.Chars.length)) {
             curInstance.Page++;
+            curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
+              curInstance?.Name
+            }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
+            // SecondEmbed.setImage("attachment://ItemSet.png");
           }
         } else if (id === `${previous}`) {
+          curInstance.Page--;
           if (curInstance.Page > 1) {
-            curInstance.Page--;
+            curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
+              curInstance?.Name
+            }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
+            // SecondEmbed.setImage("attachment://ItemSet.png");
           }
         }
         if (id === `${previous}` || id === `${next}`) {
@@ -263,9 +282,11 @@ module.exports = {
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
+          // SecondEmbed.setImage("attachment://ItemSet.png");
           await interaction.editReply({
             embeds: [SecondEmbed],
             components: [SearchbtnPrimary],
+            files: [{ attachment: curInstance.ImgUrl, name: "ItemSet.png" }],
             ephemeral: true,
           });
         }
@@ -283,6 +304,7 @@ module.exports = {
         });
       } catch {}
       Chars = [];
+      CharsSets = [];
       searchInstances.delete(curInstance);
     });
     await interaction.editReply({
@@ -291,5 +313,7 @@ module.exports = {
     });
     newDesc = [];
     Name = [];
+    Chars = [];
+    CharsSets = [];
   },
 };
