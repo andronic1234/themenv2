@@ -134,7 +134,7 @@ module.exports = {
                     : `[${itemName[0].title}]`
                 }${
                   itemName[0].title === "No Item" ? "" : `(${itemName[0].url})`
-                } \n__2__.  ${
+                } \n__2__. ${
                   itemName[1].title === "No Item"
                     ? "No Item"
                     : `[${itemName[1].title}]`
