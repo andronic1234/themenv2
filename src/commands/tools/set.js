@@ -38,7 +38,7 @@ module.exports = {
     let character = interaction.options._hoistedOptions[1].value;
     let showSkin = interaction.options._hoistedOptions[2]?.value;
     character =
-      character.toLowerCase().charAt(0).toUpperCase() + character.slice(1);
+      character.charAt(0).toUpperCase() + character.toLowerCase().slice(1);
     try {
       await fetch(
         `https://realmeye-api.glitch.me/player/${player}/${character}/weapon`
