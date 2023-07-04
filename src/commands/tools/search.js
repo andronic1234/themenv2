@@ -4,6 +4,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  AttachmentBuilder,
 } = require("discord.js");
 const fetch = require("node-fetch");
 const { v4: uuidv4 } = require("uuid");
@@ -11,6 +12,7 @@ let newDesc = [];
 let Name = [];
 let Chars = [];
 let CharsSets = [];
+let SetImages;
 
 let Page = 1;
 
@@ -57,7 +59,7 @@ module.exports = {
     }
     await fetch(`https://realmeye-api.glitch.me/${input}/${secondInput}`)
       .then(async (res) => await res.json())
-      .then((json) => {
+      .then(async (json) => {
         if (json.error) {
           error = true;
           interaction.editReply({
@@ -170,17 +172,33 @@ module.exports = {
             }
           }
         }
+        await fetch(
+          `https://realmeye-api.glitch.me/${input}/${secondInput}/sets`
+        )
+          .then(async (res) => await res.json())
+          .then((json) => {
+            if (json.error) {
+              error = true;
+              interaction.editReply({
+                content: `Error: ${json.error}`,
+                embeds: [],
+              });
+              return;
+            }
+            SetImages = json;
+          });
         const searchResults = {
           Name: Name,
           newDesc: newDesc,
           Chars: Chars,
           Page: Page,
           CharsSets: CharsSets,
-          ImgUrl: "",
+          SetImages: SetImages,
         };
 
         searchInstances.set(InstanceID, searchResults);
       });
+
     if (error == true) return;
     const curInstance = searchInstances.get(InstanceID);
 
@@ -230,9 +248,9 @@ module.exports = {
         time: 180000,
       });
     searchButtonCollector.on("collect", async (i) => {
-      curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
-        curInstance?.Name
-      }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
+      let attachment = Buffer.from(
+        curInstance.SetImages[curInstance?.CharsSets[curInstance.Page - 1]]
+      );
       try {
         let id = i.customId;
 
@@ -255,24 +273,26 @@ module.exports = {
           await interaction.editReply({
             embeds: [SecondEmbed],
             components: [SearchbtnPrimary],
-            files: [{ attachment: curInstance.ImgUrl, name: "ItemSet.png" }],
+            files: [{ attachment: attachment, name: "ItemSet.png" }],
             ephemeral: true,
           });
         } else if (id === `${next}`) {
           if (curInstance.Page < Math.ceil(curInstance.Chars.length)) {
             curInstance.Page++;
-            curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
-              curInstance?.Name
-            }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
-            // SecondEmbed.setImage("attachment://ItemSet.png");
+            attachment = Buffer.from(
+              curInstance.SetImages[
+                curInstance?.CharsSets[curInstance.Page - 1]
+              ]
+            );
           }
         } else if (id === `${previous}`) {
-          curInstance.Page--;
           if (curInstance.Page > 1) {
-            curInstance.ImgUrl = `https://realmeye-api.glitch.me/player/${
-              curInstance?.Name
-            }/${curInstance?.CharsSets[curInstance.Page - 1]}/set`;
-            // SecondEmbed.setImage("attachment://ItemSet.png");
+            curInstance.Page--;
+            attachment = Buffer.from(
+              curInstance.SetImages[
+                curInstance?.CharsSets[curInstance.Page - 1]
+              ]
+            );
           }
         }
         if (id === `${previous}` || id === `${next}`) {
@@ -282,11 +302,10 @@ module.exports = {
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
-          // SecondEmbed.setImage("attachment://ItemSet.png");
           await interaction.editReply({
             embeds: [SecondEmbed],
             components: [SearchbtnPrimary],
-            files: [{ attachment: curInstance.ImgUrl, name: "ItemSet.png" }],
+            files: [{ attachment: attachment, name: "ItemSet.png" }],
             ephemeral: true,
           });
         }
