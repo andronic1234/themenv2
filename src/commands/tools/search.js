@@ -172,21 +172,23 @@ module.exports = {
             }
           }
         }
-        await fetch(
-          `https://realmeye-api.glitch.me/${input}/${secondInput}/sets`
-        )
-          .then(async (res) => await res.json())
-          .then((json) => {
-            if (json.error) {
-              error = true;
-              interaction.editReply({
-                content: `Error: ${json.error}`,
-                embeds: [],
-              });
-              return;
-            }
-            SetImages = json;
-          });
+        if (input === "player") {
+          await fetch(
+            `https://realmeye-api.glitch.me/${input}/${secondInput}/sets`
+          )
+            .then(async (res) => await res.json())
+            .then((json) => {
+              if (json.error) {
+                error = true;
+                interaction.editReply({
+                  content: `Error: ${json.error}`,
+                  embeds: [],
+                });
+                return;
+              }
+              SetImages = json;
+            });
+        }
         const searchResults = {
           Name: Name,
           newDesc: newDesc,
@@ -248,9 +250,12 @@ module.exports = {
         time: 180000,
       });
     searchButtonCollector.on("collect", async (i) => {
-      let attachment = Buffer.from(
-        curInstance.SetImages[curInstance?.CharsSets[curInstance.Page - 1]]
-      );
+      let attachment;
+      if (input === "player") {
+        attachment = Buffer.from(
+          curInstance.SetImages[curInstance?.CharsSets[curInstance.Page - 1]]
+        );
+      }
       try {
         let id = i.customId;
 
@@ -270,29 +275,41 @@ module.exports = {
             ephemeral: true,
           });
         } else if (id === `${second_menu}`) {
-          await interaction.editReply({
-            embeds: [SecondEmbed],
-            components: [SearchbtnPrimary],
-            files: [{ attachment: attachment, name: "ItemSet.png" }],
-            ephemeral: true,
-          });
+          if (input === "player") {
+            await interaction.editReply({
+              embeds: [SecondEmbed],
+              components: [SearchbtnPrimary],
+              files: [{ attachment: attachment, name: "ItemSet.png" }],
+              ephemeral: true,
+            });
+          } else {
+            await interaction.editReply({
+              embeds: [SecondEmbed],
+              components: [SearchbtnPrimary],
+              ephemeral: true,
+            });
+          }
         } else if (id === `${next}`) {
           if (curInstance.Page < Math.ceil(curInstance.Chars.length)) {
             curInstance.Page++;
-            attachment = Buffer.from(
-              curInstance.SetImages[
-                curInstance?.CharsSets[curInstance.Page - 1]
-              ]
-            );
+            if (input === "player") {
+              attachment = Buffer.from(
+                curInstance.SetImages[
+                  curInstance?.CharsSets[curInstance.Page - 1]
+                ]
+              );
+            }
           }
         } else if (id === `${previous}`) {
           if (curInstance.Page > 1) {
             curInstance.Page--;
-            attachment = Buffer.from(
-              curInstance.SetImages[
-                curInstance?.CharsSets[curInstance.Page - 1]
-              ]
-            );
+            if (input === "player") {
+              attachment = Buffer.from(
+                curInstance.SetImages[
+                  curInstance?.CharsSets[curInstance.Page - 1]
+                ]
+              );
+            }
           }
         }
         if (id === `${previous}` || id === `${next}`) {
@@ -302,12 +319,20 @@ module.exports = {
           SecondEmbed.setFooter({
             text: `Page ${curInstance.Page} out of ${curInstance.Chars.length}`,
           });
-          await interaction.editReply({
-            embeds: [SecondEmbed],
-            components: [SearchbtnPrimary],
-            files: [{ attachment: attachment, name: "ItemSet.png" }],
-            ephemeral: true,
-          });
+          if (input === "player") {
+            await interaction.editReply({
+              embeds: [SecondEmbed],
+              components: [SearchbtnPrimary],
+              files: [{ attachment: attachment, name: "ItemSet.png" }],
+              ephemeral: true,
+            });
+          } else {
+            await interaction.editReply({
+              embeds: [SecondEmbed],
+              components: [SearchbtnPrimary],
+              ephemeral: true,
+            });
+          }
         }
         try {
           await i.deferUpdate();
