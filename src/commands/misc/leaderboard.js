@@ -6,6 +6,10 @@ module.exports = {
     .setName("leaderboard")
     .setDescription("Shows the Men Leaderboard."),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     let profileBoard = await ProfileModel.find({});
 
     var members = [];
