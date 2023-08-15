@@ -21,6 +21,10 @@ module.exports = {
         .setRequired(false)
     ),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     if (

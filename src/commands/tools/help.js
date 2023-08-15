@@ -5,13 +5,17 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
     .setDescription("Shows the bot's Help Menu."),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     const MainBtn = uuidv4();
     const MusicBtn = uuidv4();
     const Helpembed = new EmbedBuilder()

@@ -37,6 +37,10 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     const searchInstances = new Map();
     const message = await interaction.deferReply({
       fetchReply: true,

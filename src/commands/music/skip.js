@@ -10,6 +10,10 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
+    if (interaction.channel === null)
+      return interaction.editReply({
+        content: "This command doesn't work in DMs",
+      });
     const song_queue = GetQueue.Queue.get(interaction.guild.id);
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

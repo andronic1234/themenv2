@@ -6,6 +6,10 @@ module.exports = {
     .setName("options")
     .setDescription("Checks music options"),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     let Options = GetOptions.options;
 
     let search = Options.findIndex(

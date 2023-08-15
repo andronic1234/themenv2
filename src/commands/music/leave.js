@@ -6,6 +6,10 @@ module.exports = {
     .setName("leave")
     .setDescription("Makes the Men leave the Voice Channel."),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     let voiceChannel = interaction.member.voice.channel;
     const connection = getVoiceConnection(voiceChannel.guild.id);
     if (connection) {

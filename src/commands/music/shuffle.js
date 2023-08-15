@@ -9,6 +9,10 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
+    if (interaction.channel === null)
+      return interaction.editReply({
+        content: "This command doesn't work in DMs",
+      });
     let newMessage;
     let Options = GetOptions.options;
     let result = -1;

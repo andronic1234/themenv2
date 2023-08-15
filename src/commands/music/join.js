@@ -12,6 +12,10 @@ module.exports = {
         .addChannelTypes(ChannelType.GuildVoice)
     ),
   async execute(interaction, client) {
+    if (interaction.channel === null)
+      return interaction.reply({
+        content: "This command doesn't work in DMs",
+      });
     let voiceChannel = interaction.options.getChannel("channel");
     if (!voiceChannel) {
       voiceChannel = interaction.member.voice.channel;

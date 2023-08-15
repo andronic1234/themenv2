@@ -28,7 +28,13 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-    message.delete(200);
+    if (interaction.channel === null) {
+      return interaction.editReply({
+        content: "This command doesn't work in DMs",
+      });
+    } else {
+      message.delete(200);
+    }
 
     let search = Options.findIndex(
       (ID) => ID.guildID == `${interaction.guild.id}`
@@ -65,7 +71,6 @@ module.exports = {
         thumbnail: list.thumbnail,
         size: list.size,
       };
-      console.log(list);
       var listarr = new Array();
       for (let i = 0; i < list.videos.length; i++) {
         song = {

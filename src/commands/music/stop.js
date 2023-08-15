@@ -11,7 +11,10 @@ module.exports = {
     const message = await interaction.deferReply({
       fetchReply: true,
     });
-
+    if (interaction.channel === null)
+      return interaction.editReply({
+        content: "This command doesn't work in DMs",
+      });
     let song_queue = GetQueue.Queue.get(interaction.guild.id);
     var noQueue = "Nothing is playing men";
     if (

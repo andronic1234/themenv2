@@ -6,7 +6,7 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { getVoiceConnection } = require("@discordjs/voice");
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 const GetQueue = require("./play");
 
 module.exports = {
@@ -50,7 +50,7 @@ module.exports = {
       )
       .setAuthor({
         iconURL: interaction.user.displayAvatarURL(),
-        name: interaction.user.tag,
+        name: interaction.user.username,
       })
       .setDescription(`${newDesc.slice(0, 10).join("\n\n")}`)
       .setFooter({
