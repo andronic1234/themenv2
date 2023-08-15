@@ -55,9 +55,17 @@ module.exports = {
 
     //Searches string with ytsearch
     let song;
+    let listData;
     if (input.includes("playlist?list=")) {
       let listID = input.substr(input.search("list=") + 5, 34);
       const list = await yts({ listId: listID });
+      listData = {
+        name: list.title,
+        url: list.url,
+        thumbnail: list.thumbnail,
+        size: list.size,
+      };
+      console.log(list);
       var listarr = new Array();
       for (let i = 0; i < list.videos.length; i++) {
         song = {
@@ -226,26 +234,26 @@ module.exports = {
               song_queue.connection.destroy();
               queue.delete(interaction.guild.id);
             }
-          } catch (err) {
-            console.log(err);
-          }
+          } catch {}
         }
       });
 
       //Now Playing embed
-      let NowPlaying = new EmbedBuilder()
-        .setTitle("🎶 **Now Playing** 🎶")
-        .setColor("DarkGreen")
-        .setThumbnail(song_queue.songs[0].thumb)
-        .addFields([
-          {
-            name: `Song Information:`,
-            value: `[${song_queue.songs[0].title}](${song_queue.songs[0].url})\n\n**Channel: __${song_queue.songs[0].chann}__\nLength: __${song_queue.songs[0].time}__**`,
-            inline: false,
-          },
-        ]);
+      try {
+        let NowPlaying = new EmbedBuilder()
+          .setTitle("🎶 **Now Playing** 🎶")
+          .setColor("DarkGreen")
+          .setThumbnail(song_queue.songs[0].thumb)
+          .addFields([
+            {
+              name: `Song Information:`,
+              value: `[${song_queue.songs[0].title}](${song_queue.songs[0].url})\n\n**Channel: __${song_queue.songs[0].chann}__\nLength: __${song_queue.songs[0].time}__**`,
+              inline: false,
+            },
+          ]);
 
-      await song_queue.text_channel.send({ embeds: [NowPlaying] });
+        await song_queue.text_channel.send({ embeds: [NowPlaying] });
+      } catch {}
     };
     //Create server queue
     if (
@@ -283,11 +291,34 @@ module.exports = {
       //If there's a server queue song is gonna get pushed at the end of the queue
       if (listarr != undefined) {
         server_queue.songs = server_queue.songs.concat(listarr);
+
+        const AddedList = new EmbedBuilder()
+          .setTitle("🎶 **Added Playlist** 🎶")
+          .setColor("LuminousVividPink")
+          .setThumbnail(listData?.thumbnail)
+          .addFields([
+            {
+              name: `List Information:`,
+              value: `[${listData.name}](${listData?.url})\n\n**Number of songs: __${listData?.size}__**`,
+              inline: false,
+            },
+          ]);
+        message.channel.send({ embeds: [AddedList] });
       } else {
         server_queue.songs.push(song);
+        const AddedSong = new EmbedBuilder()
+          .setTitle("🎶 **Added Song** 🎶")
+          .setColor("Orange")
+          .setThumbnail(song.thumb)
+          .addFields([
+            {
+              name: `Song Information:`,
+              value: `[${song?.title}](${song?.url})\n\n**Channel: __${song?.chann}__\nLength: __${song?.time}__**`,
+              inline: false,
+            },
+          ]);
+        message.channel.send({ embeds: [AddedSong] });
       }
-
-      message.channel.send(`🎶**${song.title}** added to the queue.`);
     }
   },
 };
